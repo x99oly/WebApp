@@ -3,12 +3,20 @@ using MySql.Data.MySqlClient;
 using System.Data.Common;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Text.Json;
+using WebApp.Domain.DomainSrv;
 
 namespace WebApp.Persistence.MySql
 {
     public class MySqlPersistence
     {
         private readonly string _connectionString = "Server=localhost;Database=reuse;User=root;Password=senha;";
+        private GetCredentials credentials;
+        public MySqlPersistence()
+        {
+            credentials = new GetCredentials();
+            _connectionString = credentials.connectionString;
+        }
 
         public async Task PostAsync<T>(T entity, string table)
         {

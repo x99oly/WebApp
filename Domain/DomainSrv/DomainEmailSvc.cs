@@ -1,6 +1,7 @@
 ﻿using System.Net.Mail;
 using System.Net;
 using System.Text.Json;
+using WebApp.Domain.DomainSrv;
 
 namespace ReuseServer.Domain.DomainSrv
 {
@@ -8,17 +9,13 @@ namespace ReuseServer.Domain.DomainSrv
     {
         internal string _domainEmail { get; }
         internal string _domainPassword { get; }
+        private GetCredentials _credentials;
 
         public DomainEmailSvc()
         {
-            string jsonFilePath = Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\Credentials.json");
-            string jsonString = File.ReadAllText(jsonFilePath);
-
-            using (JsonDocument doc = JsonDocument.Parse(jsonString))
-            {
-                _domainEmail = doc.RootElement.GetProperty("EmailSettings").GetProperty("DomainEmail").GetString();
-                _domainPassword = doc.RootElement.GetProperty("EmailSettings").GetProperty("DomainPassword").GetString();
-            }
+            _credentials = new GetCredentials();
+            _domainEmail = _credentials.domainEmail;
+            _domainPassword = _credentials.domainPassword;
         }
 
         public SmtpClient ConfigSmtp()
