@@ -1,4 +1,5 @@
 ﻿using WebApp.Aid;
+using WebApp.Domain.DTOs.Outputs;
 using WebApp.Domain.Entities;
 using WebApp.Persistence.MySql;
 
@@ -11,7 +12,7 @@ namespace WebApp.Domain.DomainSrv
             _mySql = new MySqlPersistence();
         }
 
-        internal async Task<User> Logar(string email, string password)
+        internal async Task<UserOutput> Logar(string email, string password)
         {
             var user = await _mySql.GetByEmailAsync<User>(email);
 
@@ -19,7 +20,7 @@ namespace WebApp.Domain.DomainSrv
 
             string hashPassword = Hashs.HashPassword(password + user.cod);
 
-            if (hashPassword == user.password) return user;
+            if (hashPassword == user.password) return new UserOutput(user);
 
             return null;
         }
