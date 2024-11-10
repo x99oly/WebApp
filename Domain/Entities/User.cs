@@ -70,5 +70,10 @@ namespace WebApp.Domain.Entities
         {
             return new UserOutput(this);
         }
+
+        public override string ToString()
+        {
+            return $"Nome: {name}, Código identificador: {cod}.";
+        }
     }
 }

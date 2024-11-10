@@ -1,0 +1,40 @@
+﻿@page
+@using WebApp.Domain.Entities;
+@model WebApp.Pages.LoginModel
+
+<div class="text-center">
+    <form method="post">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Login de Usuário</h4>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="emailInput">Email</label>
+                    <input type="email" class="form-control" id="emailInput" name="email" placeholder="Digite seu email" required>
+                </div>
+                <div class="form-group">
+                    <label for="passwordInput">Senha</label>
+                    <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Digite sua senha">
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Enviar</button>
+    </form>
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            <p>Erro: Login ou senha inválidos.</p>
+        </div>
+    }
+
+    <div class="text-center">
+        @{
+            if(Model.user != null)
+            {
+                <h2>Usuário: @Model.user.ToString()</h2>  <!-- Exibindo o email do usuário após login -->
+            }
+        }
+    </div>
+</div>
