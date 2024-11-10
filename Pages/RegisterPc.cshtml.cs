@@ -61,7 +61,7 @@ namespace WebApp.Pages
 
         }
 
-        public async Task OnPost()
+        public async Task<IActionResult> OnPost()
         {
             try
             {
@@ -83,7 +83,9 @@ namespace WebApp.Pages
 
                 var emailSrv = new GmailSvc();
 
-                await emailSrv.SendEmail(Email);
+                emailSrv.SendEmail(Email);
+
+                return RedirectToPage("/Login");
             }
             catch (Exception ex)
             {
@@ -91,5 +93,5 @@ namespace WebApp.Pages
                 throw new Exception($"Erro ao processar o formulário: {ex.Message}");
             }
         }
-}
+    }
 }

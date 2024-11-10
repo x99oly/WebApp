@@ -16,6 +16,7 @@ namespace WebApp.Pages
         public async Task OnPost()
         {
            user = await _loginService.Logar(email, password);
+           
         }
     }
 }
