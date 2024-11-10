@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApp.Domain.Entities;
 using WebApp.Domain.DTOs.Inputs;
 using WebApp.Persistence.MySql;
+using WebApp.Domain.DomainSrv;
 
 namespace WebApp.Pages
 {
@@ -79,6 +80,10 @@ namespace WebApp.Pages
                 pc.ConvertFrom(_newPc);
 
                 await _data.PostAsync(pc, "pcs");
+
+                var emailSrv = new GmailSvc();
+
+                await emailSrv.SendEmail(Email);
             }
             catch (Exception ex)
             {

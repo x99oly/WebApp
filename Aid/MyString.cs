@@ -13,7 +13,7 @@ namespace WebApp.Aid
         {
             if (length == null || length < 0) length = 10;
 
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*+:?";
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@$";
             var sb = new StringBuilder();
             var r = new Random();
 
