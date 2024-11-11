@@ -9,17 +9,17 @@ namespace WebApp.Domain.Entities
     internal class User
     {
         [Key]
-        public string? cod { get; set; }
+        public string? cod { get; private set; }
 
         [Required]
-        public string name { get; set; }
+        public string name { get; private set; }
 
         [Required]
-        public string email { get; set; }
-        public string? ddd { get; set; }
-        public string? phone { get; set; }
-        public string? password { get; set; }
-        public byte[]? imgBin { get; set; }
+        public string email { get; private set; }
+        public string? ddd { get; private set; }
+        public string? phone { get; private set; }
+        public string? password { get; private set; }
+        public byte[]? imgBin { get; private set; }
 
         /// <summary>
         /// Inicializa uma nova instância da classe <see cref="User"/> usando os dados fornecidos no <see cref="UserInput"/>.

@@ -5,6 +5,31 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Doe para quem mais precisa!</h1>
+
+    @if (ViewData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @ViewData["SuccessMessage"]
+        </div>
+    }
+
+    <form class="form-inline" method="post">
+        <div class="form-group mt-3">
+            <label for="nameInput">Nome</label>
+            <input type="text" class="form-control" id="nameInput" name="Name" placeholder="Seu nome" value="@Model.Name">
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="emailInput">E-mail</label>
+            <input type="email" class="form-control" id="emailInput" name="Email" placeholder="Seu e-mail" value="@Model.Email">
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="descriptionInput">Descrição</label>
+            <textarea class="form-control" id="descriptionInput" name="Description" rows="5" placeholder="Por favor, descreva aqui os itens e quantidades que pretende doar.">@Model.Description</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary my-1">Enviar</button>
+    </form>
 </div>
