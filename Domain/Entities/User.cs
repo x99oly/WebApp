@@ -27,6 +27,13 @@ namespace WebApp.Domain.Entities
         /// <param name="user">O objeto de entrada que contém os dados do usuário.</param>
         public User() { }
 
+        public User(string name, string email)
+        {
+            cod = MyString.BuildRandomString(null);
+            this.name = name;
+            this.email = email;
+        }
+
         public User(string? cod, string name, string email, string? ddd = null, string? phone = null, string? password = null, byte[]? imgBin = null)
         {
             this.name = name;

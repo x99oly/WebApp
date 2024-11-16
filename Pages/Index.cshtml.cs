@@ -38,13 +38,16 @@ namespace WebApp.Pages
                 return Page();
             }
 
+            UserInput user = new UserInput(Name, Email);
+
             try
             {
                 var user = await _mySql.GetByEmailAsync<User>(Email);
-                if (user == null || user.email == null)
+                if (user == null || user.cod == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Usuário não encontrado.");
-                    return Page();
+ 
+                    //ModelState.AddModelError(string.Empty, "Usuário não encontrado.");
+                    //return Page();
                 }
 
                 var donation = new Donation(new DonationInput(user.cod, Description));

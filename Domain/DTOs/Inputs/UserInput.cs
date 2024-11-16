@@ -29,7 +29,7 @@ namespace WebApp.Domain.DTOs.Inputs
                 throw new ArgumentException("A conversão de JSON para UserInput falhou: a string JSON não pôde ser desserializada.", nameof(jsonstring));
             }
 
-            if (!isUserInputValid(newUser))
+            if (!IsUserInputValid(newUser))
             {
                 throw new ArgumentException("UserInput falhou na criação: Nem todos os dados estavam corretos.");
             }
@@ -42,16 +42,22 @@ namespace WebApp.Domain.DTOs.Inputs
             ImgBin = newUser.ImgBin;
         }
 
-        public UserInput(string name, string email, string? ddd, string? phone, string? password, byte[]? imgBin)
+        public UserInput(string nome, string email, string? ddd, string? phone, string? password, byte[]? imgBin)
         {
-            Name = name;
-            Email = email;
+            Name = IsAnValidName(nome) ? nome : throw new ArgumentException("Nome inválido!", nameof(nome));
+            Email = IsAnValidEmail(email) ? email : throw new ArgumentException("Email inválido!", nameof(email));
             Ddd = ddd;
             Phone = phone;
             Password = password;
             ImgBin = imgBin;
 
-           // if (!isUserInputValid(this)) throw new Exception("Não foi possível criar usuário.");
+            if (!IsUserInputValid(this)) throw new Exception("Não foi possível criar usuário.");
+        }
+
+        public UserInput(string nome, string email)
+        {
+            Name = IsAnValidName(nome) ? nome : throw new ArgumentException("Nome inválido!", nameof(nome));
+            Email = IsAnValidEmail(email) ? email : throw new ArgumentException("Email inválido!", nameof(email));
         }
 
 
@@ -71,7 +77,7 @@ namespace WebApp.Domain.DTOs.Inputs
             return JsonSerializer.Deserialize<UserInput>(jsonstring);
         }
 
-        private bool isUserInputValid(UserInput user)
+        private bool IsUserInputValid(UserInput user)
         {
             // Validação de email
             if (!IsAnValidEmail(user.Email))
@@ -80,7 +86,7 @@ namespace WebApp.Domain.DTOs.Inputs
             }
 
             // Validação de nome
-            if (!isAnValidName(user.Name))
+            if (!IsAnValidName(user.Name))
             {
                 throw new ArgumentException("Nome inválido fornecido: deve ter pelo menos 2 caracteres.", nameof(user.Name));
             }
@@ -88,7 +94,7 @@ namespace WebApp.Domain.DTOs.Inputs
             return true;
         }
 
-        private bool isAnValidName(string name)
+        private bool IsAnValidName(string name)
         {
             return !string.IsNullOrWhiteSpace(name) && name.Length >= 2;
         }
