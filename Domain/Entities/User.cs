@@ -34,6 +34,17 @@ namespace WebApp.Domain.Entities
             this.email = email;
         }
 
+        public User(UserInput input)
+        {
+            cod = MyString.BuildRandomString(null);
+            name = input.Name;
+            email = input.Email;
+            ddd = input.Ddd;
+            phone = input.Phone;
+            password = input.Password;
+            imgBin = input.ImgBin;
+        }
+
         public User(string? cod, string name, string email, string? ddd = null, string? phone = null, string? password = null, byte[]? imgBin = null)
         {
             this.name = name;
