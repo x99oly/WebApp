@@ -13,6 +13,7 @@ namespace WebApp.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private MySqlPersistence _mySql = new MySqlPersistence();
+        
         private GmailSvc _email = new GmailSvc();
         private DomainEmailSvc _message = new DomainEmailSvc();
 
@@ -38,24 +39,11 @@ namespace WebApp.Pages
                 return Page();
             }
 
-            UserInput user = new UserInput(Name, Email);
+            UserInput newUser = new UserInput(Name, Email);
 
             try
             {
-                //var user = await _mySql.GetByEmailAsync<User>(Email);
-                //if (user == null || user.cod == null)
-                //{
- 
-                //    //ModelState.AddModelError(string.Empty, "Usuário não encontrado.");
-                //    //return Page();
-                //}
-
-                //var donation = new Donation(new DonationInput(user.cod, Description));
-                //await _mySql.PostAsync<Donation>(donation, "donation");
-
-                //_email.SendEmail(user.email, _message.SuccessDonationMessage);
-                //// Mensagem de sucesso opcional
-                //ViewData["SuccessMessage"] = "Doação registrada com sucesso!";
+                
             }
             catch (Exception ex)
             {

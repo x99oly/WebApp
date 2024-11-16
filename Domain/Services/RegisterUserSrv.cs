@@ -1,10 +1,11 @@
 ﻿using WebApp.Domain.DTOs.Inputs;
 using WebApp.Domain.Entities;
+using WebApp.Domain.Interfaces;
 using WebApp.Persistence.MySql;
 
 namespace WebApp.Domain.Services
 {
-    public class RegisterUserSrv
+    public class RegisterUserSrv : IService<UserInput>
     {
         private MySqlPersistence _data;
         private User _user;
