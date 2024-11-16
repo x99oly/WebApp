@@ -9,23 +9,30 @@ namespace WebApp.Domain.Entities
     internal class User
     {
         [Key]
-        public string? cod { get; set; }
+        public string? cod { get; private set; }
 
         [Required]
-        public string name { get; set; }
+        public string name { get; private set; }
 
         [Required]
-        public string email { get; set; }
-        public string? ddd { get; set; }
-        public string? phone { get; set; }
-        public string? password { get; set; }
-        public byte[]? imgBin { get; set; }
+        public string email { get; private set; }
+        public string? ddd { get; private set; }
+        public string? phone { get; private set; }
+        public string? password { get; private set; }
+        public byte[]? imgBin { get; private set; }
 
         /// <summary>
         /// Inicializa uma nova instância da classe <see cref="User"/> usando os dados fornecidos no <see cref="UserInput"/>.
         /// </summary>
         /// <param name="user">O objeto de entrada que contém os dados do usuário.</param>
         public User() { }
+
+        public User(string name, string email)
+        {
+            cod = MyString.BuildRandomString(null);
+            this.name = name;
+            this.email = email;
+        }
 
         public User(string? cod, string name, string email, string? ddd = null, string? phone = null, string? password = null, byte[]? imgBin = null)
         {

@@ -12,7 +12,7 @@ namespace WebApp.Domain.DomainSrv
         {
             config = new DomainEmailSvc();
         }
-        public async Task SendEmail(string destinatario)
+        public async Task SendEmail(string destinatario, Func<MailMessage> func)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace WebApp.Domain.DomainSrv
                 var smtpClient = config.ConfigSmtp();
 
                 // Criando mensagem
-                var mailMessage = config.SuccessRegisterMessage();
+                var mailMessage = func();
                 mailMessage.To.Add(destinatario);
 
                 await smtpClient.SendMailAsync(mailMessage);

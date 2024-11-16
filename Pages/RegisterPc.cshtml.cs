@@ -5,6 +5,7 @@ using WebApp.Domain.Entities;
 using WebApp.Domain.DTOs.Inputs;
 using WebApp.Persistence.MySql;
 using WebApp.Domain.DomainSrv;
+using ReuseServer.Domain.DomainSrv;
 
 namespace WebApp.Pages
 {
@@ -12,6 +13,7 @@ namespace WebApp.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private MySqlPersistence _data = new MySqlPersistence();
+        private DomainEmailSvc _message = new DomainEmailSvc();
         private UserInput _newUser;
         private PcInput _newPc;
 
@@ -83,7 +85,7 @@ namespace WebApp.Pages
 
                 var emailSrv = new GmailSvc();
 
-                emailSrv.SendEmail(Email);
+                emailSrv.SendEmail(Email, _message.SuccessRegisterMessage);
 
                 return RedirectToPage("/Login");
             }
