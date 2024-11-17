@@ -62,7 +62,7 @@ namespace WebApp.Persistence.MySql
 
             using (var connection = await GetConnectionAsync())
             {
-                var commandText = $"SELECT * FROM {tableName} WHERE COD = @cod";
+                var commandText = $"SELECT * FROM {tableName} WHERE USER_COD = @cod";
                 var parameters = new Dictionary<string, object>
                 {
                     { "@cod", cod }

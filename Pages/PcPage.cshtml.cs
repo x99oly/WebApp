@@ -14,7 +14,7 @@ namespace WebApp.Pages
         public UserOutput User { get; set; }
         public PcOutput Pc { get; set; }
 
-        public async void OnGet()
+        public async Task OnGet()
         {
             try
             {
@@ -26,6 +26,7 @@ namespace WebApp.Pages
                 if (User == null || email == null) await Redirect();
 
                 Pc = await _pcSrv.Srv(email);
+                if (Pc == null) await Redirect();
             }
             catch (Exception ex)
             {
