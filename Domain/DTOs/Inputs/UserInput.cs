@@ -58,6 +58,10 @@ namespace WebApp.Domain.DTOs.Inputs
         {
             Name = IsAnValidName(nome) ? nome : throw new ArgumentException("Nome inválido!", nameof(nome));
             Email = IsAnValidEmail(email) ? email : throw new ArgumentException("Email inválido!", nameof(email));
+            Ddd = null;
+            Phone = null;
+            Password = null;
+            ImgBin = null;
         }
 
 

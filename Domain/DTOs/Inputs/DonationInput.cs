@@ -4,7 +4,7 @@ namespace WebApp.Domain.DTOs.Inputs
 {
     public class DonationInput
     {
-        public string CodUser;
+        public string email;
         public string Description;
         public bool Finished;
 
@@ -12,9 +12,9 @@ namespace WebApp.Domain.DTOs.Inputs
         {
         }
 
-        public DonationInput(string codUser, string description)
+        public DonationInput(string email, string description)
         {
-            CodUser = codUser;
+            this.email = email;
             Description = description;
             Finished = false;
         }

@@ -1,5 +1,6 @@
 ﻿using WebApp.Aid;
 using WebApp.Domain.DTOs.Inputs;
+using WebApp.Persistence.MySql;
 
 namespace WebApp.Domain.Entities
 {
@@ -18,14 +19,21 @@ namespace WebApp.Domain.Entities
             Cod = MyString.BuildRandomString(null);
         }
 
-        public Donation(DonationInput input)
+        internal async Task NewDonation(DonationInput input)
         {
             if(string.IsNullOrEmpty(Cod)) Cod = MyString.BuildRandomString(null);
 
-            Cod_User = input.CodUser;
+            Cod_User = await GetUserCod(input.email);
             Description = input.Description;
             Finished = input.Finished;
             Date = DateTime.Now;
+        }
+
+        private async Task<string> GetUserCod(string email)
+        {
+            MySqlPersistence _sql = new MySqlPersistence();
+            User user = await _sql.GetByEmailAsync<User>(email);
+            return user.cod;
         }
         public void UpdateEntity(string? codUser, string? codPc, string? codCersam, string? description)
         {
