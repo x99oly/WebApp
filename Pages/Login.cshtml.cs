@@ -14,10 +14,16 @@ namespace WebApp.Pages
         internal UserOutput user { get; set; }
         public string email { get; set; }
         public string password { get; set; }
-        public async Task OnPost()
+        public async Task<IActionResult> OnPost()
         {
-           user = await _loginService.Logar(email, password);
-           
+            try
+            {
+                user = await _loginService.Logar(email, password);
+                if (user == null) throw new ArgumentNullException(nameof(user));
+
+                return RedirectToPage("/PcPage");
+            }
+            catch (Exception ex) { Console.WriteLine(ex); return Page(); }
         }
     }
 }

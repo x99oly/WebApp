@@ -1,9 +1,11 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using MySql.Data.MySqlClient;
+using Mysqlx.Prepare;
 using System.Data.Common;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using WebApp.Domain.DomainSrv;
 
 namespace WebApp.Persistence.MySql
@@ -52,7 +54,6 @@ namespace WebApp.Persistence.MySql
         }
 
 
-
         // *********************************************************************************************** //
         // *****************************  MÉTODOS AUXILIÁRES E PRIVADOS ********************************** //
         // *********************************************************************************************** //
@@ -99,9 +100,14 @@ namespace WebApp.Persistence.MySql
             };
         }
 
+        private MySqlCommand CreateCommand(string commandText, MySqlConnection connection )
+        {
+            return new MySqlCommand(commandText, connection);
+        }
+
         private MySqlCommand CreateCommand(MySqlConnection connection, string commandText, Dictionary<string, object> parameters)
         {
-            var command = new MySqlCommand(commandText, connection);
+            var command = CreateCommand(commandText, connection);
             foreach (var param in parameters)
             {
                 command.Parameters.AddWithValue(param.Key, param.Value);
@@ -136,7 +142,6 @@ namespace WebApp.Persistence.MySql
                 throw new Exception($"Erro ao executar comando no banco de dados: {ex.Message}", ex);
             }
         }
-
 
         private void ValidateParameters<T>(T entity, string table)
         {
