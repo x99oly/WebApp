@@ -3,7 +3,7 @@ using WebApp.Domain.Entities;
 
 namespace WebApp.Domain.DTOs.Outputs
 {
-    internal class UserOutput
+    public class UserOutput
     {
         public string Name { get; set; }
         public string Email { get; set; }

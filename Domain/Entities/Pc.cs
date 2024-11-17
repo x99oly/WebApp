@@ -10,7 +10,7 @@ using WebApp.Domain.Enums;
 
 namespace WebApp.Domain.Entities
 {
-    internal class Pc 
+    public class Pc 
     {
         [Key]
         public string cod { get; set; }

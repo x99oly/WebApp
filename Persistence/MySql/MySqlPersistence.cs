@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using WebApp.Domain.DomainSrv;
+using WebApp.Domain.Entities;
 
 namespace WebApp.Persistence.MySql
 {
@@ -37,6 +38,7 @@ namespace WebApp.Persistence.MySql
             }
         }
 
+        [Obsolete]
         public async Task<T> GetByEmailAsync<T>(string email) where T : class
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
@@ -47,6 +49,23 @@ namespace WebApp.Persistence.MySql
                 var parameters = new Dictionary<string, object>
                 {
                     { "@email", email }
+                };
+
+                return await ExecuteQueryAsync<T>(connection, commandText, parameters);
+            }
+        }
+
+        public async Task<T> GetByEmailAsync<T>(string email, string cod, string tableName) where T : class
+        {
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+            if (!IsValidTableName(tableName)) throw new ArgumentException(nameof(tableName));
+
+            using (var connection = await GetConnectionAsync())
+            {
+                var commandText = $"SELECT * FROM {tableName} WHERE COD = @cod";
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@cod", cod }
                 };
 
                 return await ExecuteQueryAsync<T>(connection, commandText, parameters);
@@ -142,6 +161,14 @@ namespace WebApp.Persistence.MySql
                 throw new Exception($"Erro ao executar comando no banco de dados: {ex.Message}", ex);
             }
         }
+
+        public bool IsValidTableName(string tableName)
+        {
+            var validTableNames = new HashSet<string> { "users", "cersam", "donation", "donation_lot", "pcs", "schedule_Availability" };
+
+            return validTableNames.Contains(tableName.ToLower());
+        }
+
 
         private void ValidateParameters<T>(T entity, string table)
         {

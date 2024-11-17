@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Org.BouncyCastle.Bcpg;
 using WebApp.Domain.DomainSrv;
 using WebApp.Domain.DTOs.Outputs;
-using WebApp.Domain.Entities;
-using WebApp.Persistence.MySql;
+using System.Text.Json;
+
 
 namespace WebApp.Pages
 {
@@ -21,6 +22,8 @@ namespace WebApp.Pages
                 user = await _loginService.Logar(email, password);
                 if (user == null) throw new ArgumentNullException(nameof(user));
 
+                TempData["email"] = JsonSerializer.Serialize(email);
+                TempData["User"] = JsonSerializer.Serialize(user);
                 return RedirectToPage("/PcPage");
             }
             catch (Exception ex) { Console.WriteLine(ex); return Page(); }
