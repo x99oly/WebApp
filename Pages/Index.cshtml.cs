@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReuseServer.Domain.DomainSrv;
 using WebApp.Domain.DomainSrv;
 using WebApp.Domain.DTOs.Inputs;
+using WebApp.Domain.DTOs.Outputs;
 using WebApp.Domain.Entities;
+using WebApp.Domain.Interfaces;
+using WebApp.Domain.Services;
 using WebApp.Persistence.MySql;
 
 namespace WebApp.Pages
@@ -12,9 +15,9 @@ namespace WebApp.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private MySqlPersistence _mySql = new MySqlPersistence();
-        private GmailSvc _email = new GmailSvc();
-        private DomainEmailSvc _message = new DomainEmailSvc();
+
+        private RegisterUserSrv _userSrv;
+        private RegisterDonationSrv _donationSrv;
 
         public string CodUser { get; set; }
         public string Name { get; set; }
@@ -24,6 +27,8 @@ namespace WebApp.Pages
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
+            _userSrv = new RegisterUserSrv();
+            _donationSrv = new RegisterDonationSrv();
         }
 
         public void OnGet()
@@ -38,24 +43,16 @@ namespace WebApp.Pages
                 return Page();
             }
 
-            UserInput user = new UserInput(Name, Email);
 
             try
             {
-                var user = await _mySql.GetByEmailAsync<User>(Email);
-                if (user == null || user.cod == null)
-                {
- 
-                    //ModelState.AddModelError(string.Empty, "Usuário não encontrado.");
-                    //return Page();
-                }
+                UserInput newUser = new UserInput(Name, Email);
+                string email = newUser.Email;
+                UserOutput user =  await _userSrv.Srv(newUser);
 
-                var donation = new Donation(new DonationInput(user.cod, Description));
-                await _mySql.PostAsync<Donation>(donation, "donation");
+                DonationInput donationInput = new DonationInput(Email, Description);
+                await _donationSrv.Srv(donationInput);
 
-                _email.SendEmail(user.email, _message.SuccessDonationMessage);
-                // Mensagem de sucesso opcional
-                ViewData["SuccessMessage"] = "Doação registrada com sucesso!";
             }
             catch (Exception ex)
             {
