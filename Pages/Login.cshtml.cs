@@ -24,6 +24,11 @@ namespace WebApp.Pages
 
                 TempData["email"] = JsonSerializer.Serialize(email);
                 TempData["User"] = JsonSerializer.Serialize(user);
+
+                //TempData["javascript"] = $@"
+                //    sessionStorage.setItem('email', '{email}');
+                //    sessionStorage.setItem('user', '{JsonSerializer.Serialize(user)}');
+                //";
                 return RedirectToPage("/PcPage");
             }
             catch (Exception ex) { Console.WriteLine(ex); return Page(); }

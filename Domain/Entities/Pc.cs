@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApp.Domain.DTOs.Inputs;
 using WebApp.Domain.Enums;
+using WebApp.Persistence.MySql;
 
 namespace WebApp.Domain.Entities
 {
@@ -16,7 +17,7 @@ namespace WebApp.Domain.Entities
         public string cod { get; set; }
 
         [ForeignKey("User")]
-        public string user_cod { get; set; }
+        public string cod_user { get; set; }
 
         [Required]
         public string cep { get; set; }
@@ -40,8 +41,26 @@ namespace WebApp.Domain.Entities
         public Pc(User user)
         {
             if (user.cod == null) { throw new InvalidOperationException(); }
-            user_cod = user.cod;
+            cod_user = user.cod;
             cod = MyString.BuildRandomString(null);
+        }
+
+        /// <summary>
+        /// Para conseguir o código do ponto de coleta usando email do usuário associado. Retorna null se email não existir.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<string> GetCod(string email)
+        {
+            MySqlPersistence mysql = new MySqlPersistence();
+
+            User user = await mysql.GetByEmailAsync<User>(email);
+            if (user == null) return null;
+
+            Pc pc = await mysql.GetByUserCodAsync<Pc>(user.cod, "pcs");
+            if (pc == null) return null;
+
+            return pc.cod;
         }
 
         public void ConvertFrom(PcInput input)

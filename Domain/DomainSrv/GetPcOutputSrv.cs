@@ -21,7 +21,7 @@ namespace WebApp.Domain.DomainSrv
 
                 if (user == null) throw new ArgumentNullException(nameof(user));
 
-                return new PcOutput(await _data.GetByEmailAsync<Pc>(email, user.cod, "pcs"));
+                return new PcOutput(await _data.GetByUserCodAsync<Pc>(user.cod, "pcs"));
             }
             catch (Exception ex)
             {

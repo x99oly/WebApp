@@ -25,7 +25,7 @@ namespace WebApp.Domain.DomainSrv
                     _user = new User(user);
                     await _data.PostAsync<User>(_user, "users");
                 }
-                _pc = await _data.GetByEmailAsync<Pc>(_user.email, _user.cod, "pcs");
+                _pc = await _data.GetByUserCodAsync<Pc>(_user.cod, "pcs");
                 if (_pc == null)
                 {
                     _pc = new Pc(_user);

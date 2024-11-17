@@ -16,12 +16,12 @@ namespace WebApp.Domain.Entities
 
         public Donation()
         {
-            Cod = MyString.BuildRandomString(null);
+            Cod = MyString.BuildRandomString(4);
         }
 
         internal async Task NewDonation(DonationInput input)
         {
-            if(string.IsNullOrEmpty(Cod)) Cod = MyString.BuildRandomString(null);
+            if(string.IsNullOrEmpty(Cod)) Cod = MyString.BuildRandomString(4);
 
             Cod_User = await GetUserCod(input.email);
             Description = input.Description;
@@ -35,21 +35,22 @@ namespace WebApp.Domain.Entities
             User user = await _sql.GetByEmailAsync<User>(email);
             return user.cod;
         }
-        public void UpdateEntity(string? codUser, string? codPc, string? codCersam, string? description)
+        public void UpdateEntity(string? codPc, string? codCersam, string? description)
         {
-            if (!string.IsNullOrEmpty(codUser)) Cod_User = codUser;
             if (!string.IsNullOrEmpty(codPc)) Cod_Pc = codPc;
             if (!string.IsNullOrEmpty(codCersam)) Cod_Cersam = codCersam;
             if (!string.IsNullOrEmpty(description)) Description = description;
         }
 
-        public void FinishDonation()
+        public bool FinishDonation()
         {
             if (string.IsNullOrEmpty(Cod_User)) throw new InvalidOperationException("Usuário não pode ser nulo.");
             if (string.IsNullOrEmpty(Cod_Pc)) throw new InvalidOperationException("Código do Ponto de Coleta não pode ser nulo ou vazio.");
             if (string.IsNullOrEmpty(Cod_Cersam)) throw new InvalidOperationException("Código do Cersam não pode ser nulo ou vazio.");
 
             Finished = true;
+            return Finished;
         }
+
     }
 }

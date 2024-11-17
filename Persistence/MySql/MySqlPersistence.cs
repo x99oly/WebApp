@@ -21,6 +21,14 @@ namespace WebApp.Persistence.MySql
             _connectionString = credentials.connectionString;
         }
 
+
+        /// <summary>
+        /// IMPLEMENTAÇÃO IMPEDE FAZER POST PARA TESTAR SE USUÁRIO EXISTE...
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
         public async Task PostAsync<T>(T entity, string table)
         {
             ValidateParameters(entity, table);
@@ -31,14 +39,22 @@ namespace WebApp.Persistence.MySql
                 {
                     GenerateColumnsAndParameters(entity, out var columns, out var parameters, command);
 
-                    command.CommandText = $"INSERT INTO {table.ToLower()} ({string.Join(",", columns)}) VALUES ({string.Join(",", parameters)});";
+                    var updateClauses = columns
+                        .Select(c => $"{c} = VALUES({c})") // 'VALUES(c)' irá pegar o novo valor para a coluna
+                        .ToList();
+
+                    command.CommandText = $@"
+                        INSERT INTO {table.ToLower()} ({string.Join(",", columns)})
+                        VALUES ({string.Join(",", parameters)})
+                        ON DUPLICATE KEY UPDATE {string.Join(",", updateClauses)};";
+
+                    //command.CommandText = $"INSERT INTO {table.ToLower()} ({string.Join(",", columns)}) VALUES ({string.Join(",", parameters)});";
 
                     await ExecuteCommandAsync(command);
                 }
             }
         }
 
-        [Obsolete]
         public async Task<T> GetByEmailAsync<T>(string email) where T : class
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
@@ -55,20 +71,68 @@ namespace WebApp.Persistence.MySql
             }
         }
 
-        public async Task<T> GetByEmailAsync<T>(string email, string cod, string tableName) where T : class
+        public async Task<T> GetByCodAsync<T>(string cod, string tableName) where T : class
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
             if (!IsValidTableName(tableName)) throw new ArgumentException(nameof(tableName));
 
             using (var connection = await GetConnectionAsync())
             {
-                var commandText = $"SELECT * FROM {tableName} WHERE USER_COD = @cod";
+                var commandText = $"SELECT * FROM {tableName} WHERE COD = @cod";
                 var parameters = new Dictionary<string, object>
                 {
                     { "@cod", cod }
                 };
 
                 return await ExecuteQueryAsync<T>(connection, commandText, parameters);
+            }
+        }
+
+        public async Task<T> GetByUserCodAsync<T>(string userCod, string tableName) where T : class
+        {
+            if (!IsValidTableName(tableName)) throw new ArgumentException(nameof(tableName));
+
+            using (var connection = await GetConnectionAsync())
+            {
+                var commandText = $"SELECT * FROM {tableName} WHERE COD_USER = @cod_user";
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@cod_user", userCod }
+                };
+
+                return await ExecuteQueryAsync<T>(connection, commandText, parameters);
+            }
+        }
+
+        public async Task UpdateAsync<T>(T entity, string table, string keyColumn, object keyValue)
+        {
+            ValidateParameters(entity, table);
+            if (string.IsNullOrEmpty(keyColumn)) throw new ArgumentNullException(nameof(keyColumn), "O nome da coluna chave não pode ser nulo ou vazio.");
+
+            using (var connection = await GetConnectionAsync())
+            {
+                using (var command = CreateCommand(connection))
+                {
+                    var setClauses = new List<string>();
+                    var properties = entity.GetType().GetProperties();
+
+                    foreach (var property in properties)
+                    {
+                        string parameterName = $"@{property.Name}";
+                        if (!string.Equals(property.Name, keyColumn, StringComparison.OrdinalIgnoreCase))
+                        {
+                            setClauses.Add($"{property.Name.ToUpper()} = {parameterName}");
+                            var value = property.GetValue(entity);
+                            command.Parameters.AddWithValue(parameterName, value ?? DBNull.Value);
+                        }
+                    }
+
+                    command.Parameters.AddWithValue($"@{keyColumn}", keyValue);
+
+                    var setClause = string.Join(", ", setClauses);
+                    command.CommandText = $"UPDATE {table.ToLower()} SET {setClause} WHERE {keyColumn} = @{keyColumn};";
+
+                    await ExecuteCommandAsync(command);
+                }
             }
         }
 
@@ -92,7 +156,7 @@ namespace WebApp.Persistence.MySql
 
         private T MapToEntity<T>(DbDataReader reader) where T : class
         {
-            var entity = Activator.CreateInstance<T>();
+            var entity = Activator.CreateInstance<T>(); // Inicia o objeto que tem construtor padrão
             foreach (var property in typeof(T).GetProperties())
             {
                 if (!reader.IsDBNull(reader.GetOrdinal(property.Name)))
@@ -119,7 +183,7 @@ namespace WebApp.Persistence.MySql
             };
         }
 
-        private MySqlCommand CreateCommand(string commandText, MySqlConnection connection )
+        private MySqlCommand CreateCommand(string commandText, MySqlConnection connection)
         {
             return new MySqlCommand(commandText, connection);
         }
