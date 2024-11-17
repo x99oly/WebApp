@@ -1,10 +1,13 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using MySql.Data.MySqlClient;
+using Mysqlx.Prepare;
 using System.Data.Common;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using WebApp.Domain.DomainSrv;
+using WebApp.Domain.Entities;
 
 namespace WebApp.Persistence.MySql
 {
@@ -18,6 +21,14 @@ namespace WebApp.Persistence.MySql
             _connectionString = credentials.connectionString;
         }
 
+
+        /// <summary>
+        /// IMPLEMENTAÇÃO IMPEDE FAZER POST PARA TESTAR SE USUÁRIO EXISTE...
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
         public async Task PostAsync<T>(T entity, string table)
         {
             ValidateParameters(entity, table);
@@ -28,7 +39,16 @@ namespace WebApp.Persistence.MySql
                 {
                     GenerateColumnsAndParameters(entity, out var columns, out var parameters, command);
 
-                    command.CommandText = $"INSERT INTO {table.ToLower()} ({string.Join(",", columns)}) VALUES ({string.Join(",", parameters)});";
+                    var updateClauses = columns
+                        .Select(c => $"{c} = VALUES({c})") // 'VALUES(c)' irá pegar o novo valor para a coluna
+                        .ToList();
+
+                    command.CommandText = $@"
+                        INSERT INTO {table.ToLower()} ({string.Join(",", columns)})
+                        VALUES ({string.Join(",", parameters)})
+                        ON DUPLICATE KEY UPDATE {string.Join(",", updateClauses)};";
+
+                    //command.CommandText = $"INSERT INTO {table.ToLower()} ({string.Join(",", columns)}) VALUES ({string.Join(",", parameters)});";
 
                     await ExecuteCommandAsync(command);
                 }
@@ -51,6 +71,70 @@ namespace WebApp.Persistence.MySql
             }
         }
 
+        public async Task<T> GetByCodAsync<T>(string cod, string tableName) where T : class
+        {
+            if (!IsValidTableName(tableName)) throw new ArgumentException(nameof(tableName));
+
+            using (var connection = await GetConnectionAsync())
+            {
+                var commandText = $"SELECT * FROM {tableName} WHERE COD = @cod";
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@cod", cod }
+                };
+
+                return await ExecuteQueryAsync<T>(connection, commandText, parameters);
+            }
+        }
+
+        public async Task<T> GetByUserCodAsync<T>(string userCod, string tableName) where T : class
+        {
+            if (!IsValidTableName(tableName)) throw new ArgumentException(nameof(tableName));
+
+            using (var connection = await GetConnectionAsync())
+            {
+                var commandText = $"SELECT * FROM {tableName} WHERE COD_USER = @cod_user";
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@cod_user", userCod }
+                };
+
+                return await ExecuteQueryAsync<T>(connection, commandText, parameters);
+            }
+        }
+
+        public async Task UpdateAsync<T>(T entity, string table, string keyColumn, object keyValue)
+        {
+            ValidateParameters(entity, table);
+            if (string.IsNullOrEmpty(keyColumn)) throw new ArgumentNullException(nameof(keyColumn), "O nome da coluna chave não pode ser nulo ou vazio.");
+
+            using (var connection = await GetConnectionAsync())
+            {
+                using (var command = CreateCommand(connection))
+                {
+                    var setClauses = new List<string>();
+                    var properties = entity.GetType().GetProperties();
+
+                    foreach (var property in properties)
+                    {
+                        string parameterName = $"@{property.Name}";
+                        if (!string.Equals(property.Name, keyColumn, StringComparison.OrdinalIgnoreCase))
+                        {
+                            setClauses.Add($"{property.Name.ToUpper()} = {parameterName}");
+                            var value = property.GetValue(entity);
+                            command.Parameters.AddWithValue(parameterName, value ?? DBNull.Value);
+                        }
+                    }
+
+                    command.Parameters.AddWithValue($"@{keyColumn}", keyValue);
+
+                    var setClause = string.Join(", ", setClauses);
+                    command.CommandText = $"UPDATE {table.ToLower()} SET {setClause} WHERE {keyColumn} = @{keyColumn};";
+
+                    await ExecuteCommandAsync(command);
+                }
+            }
+        }
 
 
         // *********************************************************************************************** //
@@ -72,7 +156,7 @@ namespace WebApp.Persistence.MySql
 
         private T MapToEntity<T>(DbDataReader reader) where T : class
         {
-            var entity = Activator.CreateInstance<T>();
+            var entity = Activator.CreateInstance<T>(); // Inicia o objeto que tem construtor padrão
             foreach (var property in typeof(T).GetProperties())
             {
                 if (!reader.IsDBNull(reader.GetOrdinal(property.Name)))
@@ -99,9 +183,14 @@ namespace WebApp.Persistence.MySql
             };
         }
 
+        private MySqlCommand CreateCommand(string commandText, MySqlConnection connection)
+        {
+            return new MySqlCommand(commandText, connection);
+        }
+
         private MySqlCommand CreateCommand(MySqlConnection connection, string commandText, Dictionary<string, object> parameters)
         {
-            var command = new MySqlCommand(commandText, connection);
+            var command = CreateCommand(commandText, connection);
             foreach (var param in parameters)
             {
                 command.Parameters.AddWithValue(param.Key, param.Value);
@@ -135,6 +224,13 @@ namespace WebApp.Persistence.MySql
             {
                 throw new Exception($"Erro ao executar comando no banco de dados: {ex.Message}", ex);
             }
+        }
+
+        public bool IsValidTableName(string tableName)
+        {
+            var validTableNames = new HashSet<string> { "users", "cersam", "donation", "donation_lot", "pcs", "schedule_Availability" };
+
+            return validTableNames.Contains(tableName.ToLower());
         }
 
 

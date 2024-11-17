@@ -14,7 +14,8 @@ namespace WebApp.Domain.DTOs.Outputs
         public string City { get; set; }
         public string State { get; set; }
 
-        internal PcOutput(Pc pc)
+        public PcOutput() { }
+        public PcOutput(Pc pc)
         {
             Cep = pc.cep;
             Street = pc.street;
@@ -23,6 +24,17 @@ namespace WebApp.Domain.DTOs.Outputs
             Complement = pc.complement;
             City = pc.city;
             State = pc.state;
+        }
+
+        public PcOutput(string cep, string street, string number, string neighborhood, string complement, string city, string state)
+        {
+            Cep = cep;
+            Street = street;
+            Number = number;
+            Neighborhood = neighborhood;
+            Complement = complement;
+            City = city;
+            State = state;
         }
     }
 }

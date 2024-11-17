@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Org.BouncyCastle.Bcpg;
 using WebApp.Domain.DomainSrv;
 using WebApp.Domain.DTOs.Outputs;
-using WebApp.Domain.Entities;
-using WebApp.Persistence.MySql;
+using System.Text.Json;
+
 
 namespace WebApp.Pages
 {
@@ -14,10 +15,23 @@ namespace WebApp.Pages
         internal UserOutput user { get; set; }
         public string email { get; set; }
         public string password { get; set; }
-        public async Task OnPost()
+        public async Task<IActionResult> OnPost()
         {
-           user = await _loginService.Logar(email, password);
-           
+            try
+            {
+                user = await _loginService.Logar(email, password);
+                if (user == null) throw new ArgumentNullException(nameof(user));
+
+                TempData["email"] = JsonSerializer.Serialize(email);
+                TempData["User"] = JsonSerializer.Serialize(user);
+
+                //TempData["javascript"] = $@"
+                //    sessionStorage.setItem('email', '{email}');
+                //    sessionStorage.setItem('user', '{JsonSerializer.Serialize(user)}');
+                //";
+                return RedirectToPage("/PcPage");
+            }
+            catch (Exception ex) { Console.WriteLine(ex); return Page(); }
         }
     }
 }

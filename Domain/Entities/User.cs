@@ -6,7 +6,7 @@ using WebApp.Domain.DTOs.Outputs;
 
 namespace WebApp.Domain.Entities
 {
-    internal class User
+    public class User
     {
         [Key]
         public string? cod { get; private set; }

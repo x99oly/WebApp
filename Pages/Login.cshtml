@@ -1,5 +1,5 @@
 ﻿@page
-@using WebApp.Domain.Entities;
+@using WebApp.Domain.Entities
 @model WebApp.Pages.LoginModel
 
 <div class="text-center">
@@ -30,19 +30,21 @@
     }
 
     <div class="text-center">
-        @{
-            if(Request.Method == "POST")
+        @if (Request.Method == "POST")
+        {
+            if (Model.user != null)
             {
-                if (Model.user != null)
-                {
-                    <h2>Usuário: @Model.user.Name, Email: @Model.user.Email</h2>  <!-- Exibindo o email do usuário após login -->
-                }
-                else
-                {
-                    <h2>Usuário: Usuário não encontrado!</h2>
-                }
+                <h2>Usuário: @Model.user.Name, Email: @Model.user.Email</h2>  <!-- Exibindo o email do usuário após login -->
             }
-           
+            else
+            {
+                <h2>Usuário: Usuário não encontrado!</h2>
+            }
         }
+    </div>
+
+    <!-- Botão para redirecionar para a página de cadastro -->
+    <div class="mt-3">
+        <a href="/RegisterPc" class="btn btn-secondary">Cadastrar Novo Usuário</a>
     </div>
 </div>

@@ -7,21 +7,21 @@ namespace WebApp.Domain.DomainSrv
 {
     public class LoginService
     {
-        private MySqlPersistence _mySql;
+        private MySqlPersistence _data;
         public LoginService() {
-            _mySql = new MySqlPersistence();
+            _data = new MySqlPersistence();
         }
 
         internal async Task<UserOutput> Logar(string email, string password)
         {
-            var user = await _mySql.GetByEmailAsync<User>(email);
+            var user = await _data.GetByEmailAsync<User>(email);
 
-            if (user == null) throw new NullReferenceException(nameof(user));
+            if (user != null)
+            {
+                string hashPassword = Hashs.HashPassword(password + user.cod);
 
-            string hashPassword = Hashs.HashPassword(password + user.cod);
-
-            if (hashPassword == user.password) return new UserOutput(user);
-
+                if (hashPassword == user.password) return new UserOutput(user);
+            }
             return null;
         }
     }

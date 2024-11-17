@@ -45,8 +45,30 @@ namespace ReuseServer.Domain.DomainSrv
             return new MailMessage()
             {
                 From = new MailAddress(_domainEmail),
-                Subject = "Reuse - Doação realizada com sucesso!",
-                Body = $"Sua doação foi realizado com sucesso. Avisaremos assim que for entregue ao Cersam.\nMuito obrigado! <3",
+                Subject = "Reuse - Doação cadastrado com sucesso!",
+                Body = $"Sua doação foi registrada com sucesso. Entregue-a em um ponto de coleta para confirmação.",
+                IsBodyHtml = false,
+            };
+        }
+
+        public MailMessage SuccesssPcReceived()
+        {
+            return new MailMessage()
+            {
+                From = new MailAddress(_domainEmail),
+                Subject = "Reuse - Doação entregue com sucesso!",
+                Body = $"Sua doação foi entregue no ponto de coleta com sucesso. Avisaremos assim que for entregue ao Cersam.\nMuito obrigado! <3",
+                IsBodyHtml = false,
+            };
+        }
+
+        public MailMessage SuccesssCersamReceived()
+        {
+            return new MailMessage()
+            {
+                From = new MailAddress(_domainEmail),
+                Subject = "Reuse - Doação entregue com sucesso!",
+                Body = $"Sua doação foi entregue ao CERSAM.\nMuito obrigado! <3",
                 IsBodyHtml = false,
             };
         }

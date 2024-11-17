@@ -12,8 +12,10 @@ namespace WebApp.Pages
     public class RegisterPcModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+
         private MySqlPersistence _data = new MySqlPersistence();
         private DomainEmailSvc _message = new DomainEmailSvc();
+        private RegisterPcSrv _pcSrv = new RegisterPcSrv();
         private UserInput _newUser;
         private PcInput _newPc;
 
@@ -70,18 +72,19 @@ namespace WebApp.Pages
 
                 _newUser = new UserInput(Name, Email, Ddd, Phone, Password, null);
 
-                var user = new User();
-                user.ConvertFrom(_newUser);
+                //var user = new User();
+                //user.ConvertFrom(_newUser);
 
-                await _data.PostAsync(user, "users");
-
+                //await _data.PostAsync(user, "users");
 
                 _newPc = new PcInput(CEP, STREET, NEIGHBORHOOD, CITY, STATE, NUMBER, COMPLEMENT);
 
-                var pc = new Pc(user);
-                pc.ConvertFrom(_newPc);
+                await _pcSrv.Srv(_newUser, _newPc);
 
-                await _data.PostAsync(pc, "pcs");
+                //var pc = new Pc(user);
+                //pc.ConvertFrom(_newPc);
+
+                //await _data.PostAsync(pc, "pcs");
 
                 var emailSrv = new GmailSvc();
 
