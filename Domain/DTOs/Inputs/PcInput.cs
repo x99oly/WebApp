@@ -39,7 +39,7 @@ namespace WebApp.Domain.DTOs.Inputs
 
         private bool IsAValidCep(string cep)
         {
-            return !string.IsNullOrWhiteSpace(cep) && System.Text.RegularExpressions.Regex.IsMatch(cep, @"^\d{5}-\d{3}$");
+            return !string.IsNullOrWhiteSpace(cep) && System.Text.RegularExpressions.Regex.IsMatch(cep, @"^\d{5}-\d{3}$") || cep.Length == 8;
         }
 
         private bool IsAValidStreet(string street)
@@ -59,7 +59,7 @@ namespace WebApp.Domain.DTOs.Inputs
 
         private bool IsAValidState(string state)
         {
-            return !string.IsNullOrWhiteSpace(state) && state.Length == 2 && state.All(char.IsUpper);
+            return !string.IsNullOrWhiteSpace(state) && state.Length == 2;
         }
 
 

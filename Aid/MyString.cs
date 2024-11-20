@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WebApp.Aid
 {
@@ -22,6 +23,15 @@ namespace WebApp.Aid
                 sb.Append(chars[r.Next(0, chars.Length)]);
             }
             return sb.ToString();
+        }
+
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            var emailRegex = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(email, emailRegex);
         }
     }
 }

@@ -1,62 +1,94 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WebApp.Domain.DTOs.Outputs;
+using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Ocsp;
 using System.Text.Json;
 using WebApp.Domain.DomainSrv;
-using System.ComponentModel.DataAnnotations;
+using WebApp.Domain.DTOs.Outputs;
 using WebApp.Domain.Entities;
 
 namespace WebApp.Pages
 {
     public class PcPageModel : PageModel
     {
-        private GetPcOutputSrv _pcSrv = new GetPcOutputSrv();
-        UpdateDonationSrv _dnSrv = new UpdateDonationSrv();
-        private string email;
+        private readonly GetPcOutputSrv _pcSrv = new GetPcOutputSrv();  // Adicionei readonly
+        private readonly UpdateDonationSrv _donationSrv = new UpdateDonationSrv(); // Adicionei readonly
 
         [BindProperty]
-        public string cod { get; set; }
-        public UserOutput user { get; set; }
-        public PcOutput Pc { get; set; }
+        public string Email { get; set; }  // Corrigido para maiúscula (convenção de C#)
+
+        [BindProperty]
+        public string Cod { get; set; }  // Corrigido para maiúscula
+
+        [BindProperty]
+        public string? Status { get; set; } // Já existente
+
+        [BindProperty]
+        public string? StatusMessage { get; set; } // Já existente
 
         public async Task OnGet()
         {
             try
             {
-                if (TempData != null)
-                {
-                    email = JsonSerializer.Deserialize<string>(TempData["email"].ToString());
-                    user = JsonSerializer.Deserialize<UserOutput>(TempData["User"].ToString());
-                }
-                if (user == null || email == null) await Redirect();
+                if (TempData == null) await RedirectToLogin();
 
-                Pc = await _pcSrv.Srv(email);
-                if (Pc == null) await Redirect();
+                //var emailJson = TempData["Email"];
+
+                //if (emailJson == null ) await RedirectToLogin();
+                if (TempData["Email"] is string email)
+                {
+                    if (string.IsNullOrEmpty(email)) await RedirectToLogin();
+                    Email = email;
+                }
+                if (TempData["Status"] is string status)
+                    Status = status;
+                if (TempData["StatusMessage"] is string statusMessage)
+                    StatusMessage = statusMessage;
+
+
+                PcOutput pc = await _pcSrv.Srv(Email);
+                // Adicionar lógica para manipular o pc, caso necessário
+
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                await Redirect();
+                await RedirectToLogin();
             }
         }
 
         public async Task<IActionResult> OnPost()
         {
-            Pc pc = new Pc();
-            string pcCod = await pc.GetCod("oliveira.samuel.edu@gmail.com");
-
-            if (string.IsNullOrEmpty(pcCod))
+            try
             {
-                ViewData["Success"] = false;
+                Pc pc = new Pc();
+                string pcCod = await pc.GetCod(Email);
+
+                if (string.IsNullOrEmpty(pcCod))
+                {
+                    // Mensagem de falha
+                    Status = "failure";
+                    StatusMessage = "Código do PC não encontrado.";
+                    return RedirectToPage();
+                }
+
+                await _donationSrv.Srv(Cod, pcCod, null, null);
+
+                // Mensagem de sucesso
+                TempData["Status"] = "success";
+                TempData["StatusMessage"] = "Atualização realizada com sucesso!";
                 return RedirectToPage();
             }
-
-            await _dnSrv.Srv(cod, pcCod, null, null);
-            ViewData["Success"] = true;
-            return RedirectToPage();
+            catch (Exception ex)
+            {
+                // Mensagem de erro genérico
+                TempData["Status"] = "failure";
+                TempData["StatusMessage"] = $"Erro durante a atualização: {ex.Message}";
+                return RedirectToPage();
+            }
         }
 
-        private async Task<IActionResult> Redirect()
+        private async Task<IActionResult> RedirectToLogin()
         {
             return RedirectToPage("/Login");
         }

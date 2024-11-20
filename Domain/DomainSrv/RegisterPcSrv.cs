@@ -20,11 +20,17 @@ namespace WebApp.Domain.DomainSrv
             try
             {
                 _user = await _data.GetByEmailAsync<User>(user.Email);
-                if (_user == null)
+                if (_user != null)
                 {
-                    _user = new User(user);
-                    await _data.PostAsync<User>(_user, "users");
+                    if (!string.IsNullOrEmpty(_user.password)) throw new Exception("Usuário já cadastrado");
                 }
+
+                _user = new User(user);
+
+                if (string.IsNullOrEmpty(_user.password)) throw new ArgumentNullException(nameof(_user.password));
+
+                await _data.PostAsync<User>(_user, "users");
+
                 _pc = await _data.GetByUserCodAsync<Pc>(_user.cod, "pcs");
                 if (_pc == null)
                 {

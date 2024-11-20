@@ -17,9 +17,12 @@ namespace WebApp.Domain.DomainSrv
         {
             try
             {
-                User user = await _data.GetByEmailAsync<User>(email);
+                var user = await _data.GetByEmailAsync<User>(email);
 
-                if (user == null) throw new ArgumentNullException(nameof(user));
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
 
                 return new PcOutput(await _data.GetByUserCodAsync<Pc>(user.cod, "pcs"));
             }

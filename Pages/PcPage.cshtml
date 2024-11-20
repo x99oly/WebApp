@@ -7,12 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil do Usuário</title>
-
-    <!-- Link do Bootstrap para um design bonito e responsivo -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
-        /* Adicionando um fundo suave e estilo de card */
         body {
             background-color: #f8f9fa;
             font-family: 'Arial', sans-serif;
@@ -35,35 +31,30 @@
             margin-top: 20px;
         }
 
-        .user-info p, .address-info p {
-            font-size: 1.1rem;
-            line-height: 1.6;
+        .status-card {
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
         }
 
-        .user-info strong, .address-info strong {
-            color: #495057;
-        }
+            .status-card.success {
+                background-color: #28a745; /* Verde */
+            }
+
+            .status-card.failure {
+                background-color: #dc3545; /* Vermelho */
+            }
     </style>
 </head>
 <body>
 
-
-
-    <!-- Divs para mensagens de feedback -->
-    <div id="successMessage" class="alert alert-success d-none" role="alert">
-        Doação validada com sucesso!
-    </div>
-    <div id="errorMessage" class="alert alert-danger d-none" role="alert">
-        Doação não encontrada.
-    </div>
-    <!-- Formulário para inserir o código -->
     <div class="container">
         <div class="card shadow-sm mb-4">
             <div class="card-body text-center">
                 <form method="post">
                     <div class="form-group text-center">
                         <label for="codeInput">Digite o Código:</label>
-                        <input type="text" class="form-control text-center" id="codeInput" name="cod" placeholder="Insira o código" required>
+                        <input type="text" class="form-control text-center" id="codeInput" name="cod" placeholder="Insira o código" required />
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Submeter</button>
                 </form>
@@ -71,58 +62,35 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h1 class="text-center">Bem-vindo, @Model.user.Name!</h1>
-                <p class="text-center text-muted">Email: @Model.user.Email</p>
-
-                <div class="user-info">
-                    <h2 class="section-title">Informações do Usuário</h2>
-                    <p><strong>Nome:</strong> @Model.user.Name</p>
-                    <p><strong>Email:</strong> @Model.user.Email</p>
-                </div>
-
-                <div class="address-info">
-                    <h2 class="section-title">Endereço do PC:</h2>
-                    <p><strong>Usuário:</strong> @Model.Pc.UserName</p>
-                    <p><strong>CEP:</strong> @Model.Pc.Cep</p>
-                    <p><strong>Rua:</strong> @Model.Pc.Street, @Model.Pc.Number</p>
-                    <p><strong>Bairro:</strong> @Model.Pc.Neighborhood</p>
-                    <p><strong>Complemento:</strong> @Model.Pc.Complement</p>
-                    <p><strong>Cidade:</strong> @Model.Pc.City</p>
-                    <p><strong>Estado:</strong> @Model.Pc.State</p>
-                </div>
-
-            </div>
+    <!-- Card para exibir status -->
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            <p>Erro: Código não encontrado inválidos.</p>
         </div>
-    </div>
+    }
 
-    <!-- Scripts do Bootstrap (não necessário para a estrutura, mas útil para interatividade se precisar) -->
     <script>
-        // // Recuperar os dados do sessionStorage
-        // fetch('/PcPageModel/OnPost', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ email: email, user: user })
-        // })
-        //     .then(response => {
-        //         if (!response.ok) {
-        //             throw new Error('Erro ao comunicar com o servidor');
-        //         }
-        //         return response.json();
-        //     })
-        //     .then(data => {
-        //         console.log(data);
-        //     })
-        //     .catch(error => {
-        //         console.error('Erro ao enviar dados:', error);
-        //         alert('Houve um problema com a solicitação. Tente novamente.');
-        //     });
+        document.addEventListener("DOMContentLoaded", function () {
+            const statusCard = statusContainer.querySelector(".status-card");
 
+            let status = "@Model.Status";
+            alert(status)
+
+            if (statusContainer && status) {
+                // Remove a classe d-none
+                statusCard. classList.remove("d-none");
+
+                // Adiciona a classe de cor baseada no status
+                if (status === "success") {
+                    statusCard.classList.add("bg-success", "text-white"); // Classe bootstrap para fundo verde
+                } else if (status === "failure") {
+                    statusCard.classList.add("bg-danger", "text-white"); // Classe bootstrap para fundo vermelho
+                }
+            }
+        });
     </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

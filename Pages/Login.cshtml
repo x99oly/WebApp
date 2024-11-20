@@ -32,9 +32,9 @@
     <div class="text-center">
         @if (Request.Method == "POST")
         {
-            if (Model.user != null)
+            if (Model.User != null)
             {
-                <h2>Usuário: @Model.user.Name, Email: @Model.user.Email</h2>  <!-- Exibindo o email do usuário após login -->
+                <h2>Usuário: @Model.User.Name, Email: @Model.User.Email</h2>  <!-- Exibindo o email do usuário após login -->
             }
             else
             {

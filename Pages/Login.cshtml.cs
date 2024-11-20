@@ -12,23 +12,19 @@ namespace WebApp.Pages
     public class LoginModel : PageModel
     {
         private LoginService _loginService = new LoginService();
-        internal UserOutput user { get; set; }
-        public string email { get; set; }
-        public string password { get; set; }
+        internal UserOutput User { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
         public async Task<IActionResult> OnPost()
         {
             try
             {
-                user = await _loginService.Logar(email, password);
-                if (user == null) throw new ArgumentNullException(nameof(user));
+                User = await _loginService.Logar(Email, Password);
+                if (User == null) throw new ArgumentNullException(nameof(User));
 
-                TempData["email"] = JsonSerializer.Serialize(email);
-                TempData["User"] = JsonSerializer.Serialize(user);
+                TempData["Email"] = JsonSerializer.Serialize(Email);
+               // TempData["User"] = JsonSerializer.Serialize(User);
 
-                //TempData["javascript"] = $@"
-                //    sessionStorage.setItem('email', '{email}');
-                //    sessionStorage.setItem('user', '{JsonSerializer.Serialize(user)}');
-                //";
                 return RedirectToPage("/PcPage");
             }
             catch (Exception ex) { Console.WriteLine(ex); return Page(); }
