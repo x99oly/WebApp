@@ -31,24 +31,16 @@ namespace WebApp.Pages
             {
                 if (TempData == null) await RedirectToLogin();
 
-                //var emailJson = TempData["Email"];
-
-                //if (emailJson == null ) await RedirectToLogin();
                 if (TempData["Email"] is string email)
                 {
                     if (string.IsNullOrEmpty(email)) await RedirectToLogin();
-                    Email = email;
+                    Email = email.Trim('"').Replace("\\", "");
+                   
                 }
                 if (TempData["Status"] is string status)
                     Status = status;
                 if (TempData["StatusMessage"] is string statusMessage)
                     StatusMessage = statusMessage;
-
-
-                PcOutput pc = await _pcSrv.Srv(Email);
-                // Adicionar lógica para manipular o pc, caso necessário
-
-
             }
             catch (Exception ex)
             {
@@ -66,10 +58,8 @@ namespace WebApp.Pages
 
                 if (string.IsNullOrEmpty(pcCod))
                 {
-                    // Mensagem de falha
-                    Status = "failure";
-                    StatusMessage = "Código do PC não encontrado.";
-                    return RedirectToPage();
+                    //return RedirectToPage("/Login");
+                    return Page();
                 }
 
                 await _donationSrv.Srv(Cod, pcCod, null, null);
@@ -77,6 +67,7 @@ namespace WebApp.Pages
                 // Mensagem de sucesso
                 TempData["Status"] = "success";
                 TempData["StatusMessage"] = "Atualização realizada com sucesso!";
+                TempData["Email"] = JsonSerializer.Serialize(Email);
                 return RedirectToPage();
             }
             catch (Exception ex)
@@ -84,6 +75,7 @@ namespace WebApp.Pages
                 // Mensagem de erro genérico
                 TempData["Status"] = "failure";
                 TempData["StatusMessage"] = $"Erro durante a atualização: {ex.Message}";
+                TempData["Email"] = JsonSerializer.Serialize(Email);
                 return RedirectToPage();
             }
         }
