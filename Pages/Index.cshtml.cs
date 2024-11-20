@@ -48,7 +48,6 @@ namespace WebApp.Pages
             {
                 UserInput newUser = new UserInput(Name, Email);
                 string email = newUser.Email;
-                UserOutput user =  await _userSrv.Srv(newUser);
 
                 DonationInput donationInput = new DonationInput(Email, Description);
                 await _donationSrv.Srv(donationInput);
