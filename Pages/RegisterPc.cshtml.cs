@@ -72,19 +72,9 @@ namespace WebApp.Pages
 
                 _newUser = new UserInput(Name, Email, Ddd, Phone, Password, null);
 
-                //var user = new User();
-                //user.ConvertFrom(_newUser);
-
-                //await _data.PostAsync(user, "users");
-
                 _newPc = new PcInput(CEP, STREET, NEIGHBORHOOD, CITY, STATE, NUMBER, COMPLEMENT);
 
                 await _pcSrv.Srv(_newUser, _newPc);
-
-                //var pc = new Pc(user);
-                //pc.ConvertFrom(_newPc);
-
-                //await _data.PostAsync(pc, "pcs");
 
                 var emailSrv = new GmailSvc();
 

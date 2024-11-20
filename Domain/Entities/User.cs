@@ -41,8 +41,14 @@ namespace WebApp.Domain.Entities
             email = input.Email;
             ddd = input.Ddd;
             phone = input.Phone;
-            password = input.Password;
             imgBin = input.ImgBin;
+            password = input.Password;
+
+            if (password != null)
+            {
+                var passwordPlusSalt = password + this.cod;
+                this.password = Hashs.HashPassword(passwordPlusSalt);
+            }
         }
 
         public User(string? cod, string name, string email, string? ddd = null, string? phone = null, string? password = null, byte[]? imgBin = null)

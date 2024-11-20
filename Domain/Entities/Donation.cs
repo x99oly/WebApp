@@ -23,10 +23,17 @@ namespace WebApp.Domain.Entities
         {
             if(string.IsNullOrEmpty(Cod)) Cod = MyString.BuildRandomString(4);
 
-            Cod_User = await GetUserCod(input.email);
+            Cod_User = await GetDonorCod(input.email);
             Description = input.Description;
             Finished = input.Finished;
             Date = DateTime.Now;
+        }
+
+        private async Task<string> GetDonorCod(string email)
+        {
+            MySqlPersistence _sql = new MySqlPersistence();
+            Donor user = await _sql.GetByEmailAsync<Donor>(email, "donor");
+            return user.Cod;
         }
 
         private async Task<string> GetUserCod(string email)

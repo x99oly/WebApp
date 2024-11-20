@@ -71,6 +71,22 @@ namespace WebApp.Persistence.MySql
             }
         }
 
+        public async Task<T> GetByEmailAsync<T>(string email, string tableName) where T : class
+        {
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+
+            using (var connection = await GetConnectionAsync())
+            {
+                var commandText = $"SELECT * FROM {tableName} WHERE EMAIL = @email";
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@email", email }
+                };
+
+                return await ExecuteQueryAsync<T>(connection, commandText, parameters);
+            }
+        }
+
         public async Task<T> GetByCodAsync<T>(string cod, string tableName) where T : class
         {
             if (!IsValidTableName(tableName)) throw new ArgumentException(nameof(tableName));
