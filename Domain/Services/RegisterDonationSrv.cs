@@ -1,4 +1,5 @@
-﻿using ReuseServer.Domain.DomainSrv;
+﻿using Microsoft.VisualBasic;
+using ReuseServer.Domain.DomainSrv;
 using WebApp.Domain.DomainSrv;
 using WebApp.Domain.DTOs.Inputs;
 using WebApp.Domain.Entities;
@@ -19,10 +20,12 @@ namespace WebApp.Domain.Services
             _data = new MySqlPersistence();
         }
 
-        internal async Task Srv(DonationInput input)
+        internal async Task Srv(DonationInput input, Donor donor)
         {
             try
             {
+                await _data.PostAsync<Donor>(donor, "donor");
+
                 _donation = new Donation();
                 await _donation.NewDonation(input);
 

@@ -47,10 +47,11 @@ namespace WebApp.Pages
             try
             {
                 UserInput newUser = new UserInput(Name, Email);
+                Donor donor = new Donor(newUser);
                 string email = newUser.Email;
 
                 DonationInput donationInput = new DonationInput(Email, Description);
-                await _donationSrv.Srv(donationInput);
+                await _donationSrv.Srv(donationInput, donor);
 
             }
             catch (Exception ex)
