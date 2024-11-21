@@ -1,4 +1,5 @@
 ﻿@page
+@using WebApp.Domain.Entities
 @model WebApp.Pages.PcPageModel
 
 <!DOCTYPE html>
@@ -53,8 +54,8 @@
             <div class="card-body text-center">
                 <form method="post">
                     <div class="form-group text-center">
-                        <label for="codeInput">Digite o Código:</label>
-                        <input type="text" class="form-control text-center" id="codeInput" name="cod" placeholder="Insira o código" required />
+                        <label for="codeInput">Registrar doação:</label>
+                        <input type="text" class="form-control text-center" id="codeInput" name="cod" placeholder="Insira o código do doador" required />
                         <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Email"/>
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Submeter</button>
@@ -62,6 +63,65 @@
             </div>
         </div>
     </div>
+
+    <div class="container">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+                <form method="post">
+                    <label for="codeInput">Fechar doações:</label>
+                    <button type="submit" asp-page-handler="CreateLot" class="btn btn-primary mt-3">Criar lote</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+                <form method="post">
+                    <div class="form-group text-center">
+                        <label for="codeInput">Fechar doações:</label>
+                        <input type="text" class="form-control text-center" id="codLotInput" name="cod_lot" placeholder="Insira o código do lote" required />
+                        <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Cod_lot" />
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Submeter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Código do Usuário</th>
+                <th>Código do PC</th>
+                <th>Código do Lote</th>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Finalizado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Donations != null && Model.Donations.Count >= 1)
+            {
+                foreach(Donation donation in Model.Donations)
+                {
+                    <tr>
+                        <td>@donation.Cod</td>
+                        <td>@donation.Cod_User</td>
+                        <td>@(donation.Cod_Pc ?? "NULL")</td>
+                        <td>@(donation.Cod_lot ?? "NULL")</td>
+                        <td>@donation.Date</td>
+                        <td>@donation.Description</td>
+                        <td>@(donation.Finished == false ? "Não" : "Sim")</td>
+                    </tr>
+                } 
+            }
+        </tbody>
+    </table>
+
 
 
     <!-- Card para exibir status -->

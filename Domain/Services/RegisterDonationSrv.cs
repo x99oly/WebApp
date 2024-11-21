@@ -24,7 +24,8 @@ namespace WebApp.Domain.Services
         {
             try
             {
-                await _data.PostAsync<Donor>(donor, "donor");
+                Donor? dnr = await _data.GetByGenerecParams<Donor>("donor", "cod", donor.Cod);
+                if( dnr == null) await _data.PostAsync<Donor>(donor, "donor");
 
                 _donation = new Donation();
                 await _donation.NewDonation(input);

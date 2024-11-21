@@ -5,7 +5,7 @@ using WebApp.Persistence.MySql;
 
 namespace WebApp.Domain.Entities
 {
-    internal class Donation
+    public class Donation
     {
         public string Cod { get; private set; }
         public string Cod_User { get; private set; }

@@ -75,6 +75,26 @@ namespace WebApp.Persistence.MySql
             }
         }
 
+        public async Task<List<Donation>> GetListByGenericParams<T>(string tableName, string columnName, string entityParam) where T : class
+        {
+            if (string.IsNullOrEmpty(entityParam)) throw new ArgumentNullException(nameof(entityParam), "O parâmetro da entidade não pode ser nulo ou vazio.");
+            if (string.IsNullOrEmpty(columnName)) throw new ArgumentNullException(nameof(columnName), "O parâmetro da tabela não pode ser nulo ou vazio.");
+            if (string.IsNullOrEmpty(tableName)) throw new ArgumentNullException(nameof(tableName), "O nome da tabela não pode ser nulo ou vazio.");
+            if (!IsValidTableName(tableName)) throw new ArgumentException("Nome de tabela inválido.");
+
+            using (var connection = await GetConnectionAsync())
+            {
+                var commandText = $"SELECT * FROM {tableName} WHERE {columnName} = @entityParam";
+                var parameters = new Dictionary<string, object>
+        {
+            {"@entityParam", entityParam }
+        };
+
+                return await ExecuteQueryAsync<List<Donation>>(connection, commandText, parameters);
+            }
+        }
+
+
         public async Task<T> GetByEmailAsync<T>(string email) where T : class
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));

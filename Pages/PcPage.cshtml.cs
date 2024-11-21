@@ -5,6 +5,9 @@ using System.Text.Json;
 using WebApp.Domain.DomainSrv;
 using WebApp.Domain.DTOs.Outputs;
 using WebApp.Domain.Entities;
+using System.Runtime.CompilerServices;
+using WebApp.Persistence.MySql;
+using Microsoft.Extensions.WebEncoders.Testing;
 
 namespace WebApp.Pages
 {
@@ -12,6 +15,8 @@ namespace WebApp.Pages
     {
         private readonly GetPcOutputSrv _pcSrv = new GetPcOutputSrv();  // Adicionei readonly
         private readonly UpdateDonationSrv _donationSrv = new UpdateDonationSrv(); // Adicionei readonly
+        private readonly DonationsSrv _donationsSrv = new DonationsSrv();
+        private MySqlPersistence _data = new MySqlPersistence();
 
         [BindProperty]
         public string Email { get; set; }  // Corrigido para maiúscula (convenção de C#)
@@ -20,10 +25,21 @@ namespace WebApp.Pages
         public string Cod { get; set; }  // Corrigido para maiúscula
 
         [BindProperty]
+        public string Cod_lot { get ; set; }
+
+        [BindProperty]
+        public DonationLot lote { get; set; }
+
+        [BindProperty]
+        public Dictionary<string, DonationLot> lotes { get; set; }
+
+        [BindProperty]
         public string? Status { get; set; } // Já existente
 
         [BindProperty]
         public string? StatusMessage { get; set; } // Já existente
+
+        public LinkedList<Donation>? Donations { get; set; }
 
         public async Task OnGet()
         {
@@ -37,10 +53,12 @@ namespace WebApp.Pages
                     Email = email.Trim('"').Replace("\\", "");
                    
                 }
-                if (TempData["Status"] is string status)
-                    Status = status;
-                if (TempData["StatusMessage"] is string statusMessage)
-                    StatusMessage = statusMessage;
+                if (TempData["Cod_lot"] is string cod_lot)
+                {
+                    if (!string.IsNullOrEmpty(cod_lot)) await RedirectToLogin();
+                    Cod_lot = cod_lot;
+                }
+
             }
             catch (Exception ex)
             {
@@ -58,28 +76,47 @@ namespace WebApp.Pages
 
                 if (string.IsNullOrEmpty(pcCod))
                 {
-                    //return RedirectToPage("/Login");
                     return Page();
                 }
 
                 await _donationSrv.Srv(Cod, pcCod, null, null);
 
-                // Mensagem de sucesso
-                TempData["Status"] = "success";
-                TempData["StatusMessage"] = "Atualização realizada com sucesso!";
-                TempData["Email"] = JsonSerializer.Serialize(Email);
-                return RedirectToPage();
+                return await RedirectToThisPage();
             }
             catch (Exception ex)
             {
-                // Mensagem de erro genérico
-                TempData["Status"] = "failure";
-                TempData["StatusMessage"] = $"Erro durante a atualização: {ex.Message}";
-                TempData["Email"] = JsonSerializer.Serialize(Email);
-                return RedirectToPage();
+                return await RedirectToThisPage();
             }
         }
 
+        public async Task OnPostCreateLot()
+        {
+            if (lotes == null) lotes = new Dictionary<string, DonationLot>();
+
+            lote = new DonationLot();
+
+            lote.Update(null, null);
+
+            try
+            {
+                await _data.PostAsync<DonationLot>(lote, "donation_lot");
+
+                Cod_lot = lote.cod;
+
+                await RedirectToThisPage();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private async Task<IActionResult> RedirectToThisPage()
+        {
+            TempData["Email"] = JsonSerializer.Serialize(Email);
+            TempData["Cod_lot"] = JsonSerializer.Serialize(Cod_lot);
+            return RedirectToPage();
+        }
         private async Task<IActionResult> RedirectToLogin()
         {
             return RedirectToPage("/Login");
