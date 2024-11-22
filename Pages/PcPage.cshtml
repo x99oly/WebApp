@@ -81,27 +81,11 @@
             <div class="card-body text-center">
                 <form method="post">
                     <div class="form-group text-center">
-                        <label for="codeInput">Fechar doações:</label>
+                        <label for="codeInput">Adicionar doação ao lote:</label>
                         <input type="text" class="form-control text-center" id="codLotInput" name="cod_lot" placeholder="Insira o código do lote" required />
                         <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Cod_lot" />
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3">Submeter</button>
-                    @if (Model.lotes != null && Model.lotes.Count != 0)
-                    {
-                        <div class="card-body text-center">
-                            @foreach (var item in Model.lotes)
-                            {
-                                @if (item.Value != null)
-                                {
-                                    <div class="form-group text-center">
-                                        <label for="codeInput"><strong>Código do lote: </strong>@item.Value.cod |
-                                            <strong>Código do lote: </strong> @item.Value.date
-                                        </label>
-                                    </div>
-                                }
-                            }
-                        </div>
-                    }
+                    <button type="submit" class="btn btn-primary mt-3">Submeter</button>                    
 
                 </form>
             </div>

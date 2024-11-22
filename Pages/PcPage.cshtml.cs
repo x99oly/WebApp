@@ -112,8 +112,6 @@ namespace WebApp.Pages
 
                 Cod_lot = lote.cod;
 
-                lotes.Add(Cod_lot, lote);
-
                 await RedirectToThisPage();
             }
             catch (Exception ex)

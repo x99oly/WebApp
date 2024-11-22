@@ -22,9 +22,12 @@ namespace WebApp.Pages
                 User = await _loginService.Logar(Email, Password);
                 if (User == null) throw new ArgumentNullException(nameof(User));
 
+                if (User.Name == "Cersam Barreiro")
+                {
+                    TempData["Email"] = JsonSerializer.Serialize(Email);
+                    return RedirectToPage("/CersamPage");
+                }
                 TempData["Email"] = JsonSerializer.Serialize(Email);
-               // TempData["User"] = JsonSerializer.Serialize(User);
-
                 return RedirectToPage("/PcPage");
             }
             catch (Exception ex) { Console.WriteLine(ex); return Page(); }
