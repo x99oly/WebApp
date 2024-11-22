@@ -55,8 +55,14 @@ namespace WebApp.Pages
                 }
                 if (TempData["Cod_lot"] is string cod_lot)
                 {
-                    if (!string.IsNullOrEmpty(cod_lot)) await RedirectToLogin();
-                    Cod_lot = cod_lot;
+                    if (!string.IsNullOrEmpty(cod_lot)) Cod_lot = cod_lot;
+                }
+                if (TempData["Lotes"] is string serializedLotes)
+                {
+                    if (!string.IsNullOrEmpty(serializedLotes))
+                    {
+                        lotes = JsonSerializer.Deserialize<Dictionary<string, DonationLot>>(serializedLotes) ?? new Dictionary<string, DonationLot>();
+                    }
                 }
 
             }
@@ -95,13 +101,18 @@ namespace WebApp.Pages
 
             lote = new DonationLot();
 
-            lote.Update(null, null);
+            var pc = new Pc();
+            string pcCod = await pc.GetCod(Email);
+
+            lote.Update(null, pcCod);
 
             try
             {
                 await _data.PostAsync<DonationLot>(lote, "donation_lot");
 
                 Cod_lot = lote.cod;
+
+                lotes.Add(Cod_lot, lote);
 
                 await RedirectToThisPage();
             }
@@ -115,6 +126,7 @@ namespace WebApp.Pages
         {
             TempData["Email"] = JsonSerializer.Serialize(Email);
             TempData["Cod_lot"] = JsonSerializer.Serialize(Cod_lot);
+            TempData["Lotes"] = JsonSerializer.Serialize(lotes);
             return RedirectToPage();
         }
         private async Task<IActionResult> RedirectToLogin()

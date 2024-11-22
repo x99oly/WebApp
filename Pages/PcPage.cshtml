@@ -68,7 +68,8 @@
         <div class="card shadow-sm mb-4">
             <div class="card-body text-center">
                 <form method="post">
-                    <label for="codeInput">Fechar doações:</label>
+                    <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Email" />
+                    <label for="codeInput">Fechar doações:</label><p></p>
                     <button type="submit" asp-page-handler="CreateLot" class="btn btn-primary mt-3">Criar lote</button>
                 </form>
             </div>
@@ -85,10 +86,28 @@
                         <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Cod_lot" />
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Submeter</button>
+                    @if (Model.lotes != null && Model.lotes.Count != 0)
+                    {
+                        <div class="card-body text-center">
+                            @foreach (var item in Model.lotes)
+                            {
+                                @if (item.Value != null)
+                                {
+                                    <div class="form-group text-center">
+                                        <label for="codeInput"><strong>Código do lote: </strong>@item.Value.cod |
+                                            <strong>Código do lote: </strong> @item.Value.date
+                                        </label>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+
                 </form>
             </div>
         </div>
-    </div>
+    </div
+    >
 
 
     <table class="table table-bordered table-striped">

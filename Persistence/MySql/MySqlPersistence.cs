@@ -75,6 +75,7 @@ namespace WebApp.Persistence.MySql
             }
         }
 
+        [Obsolete]
         public async Task<List<Donation>> GetListByGenericParams<T>(string tableName, string columnName, string entityParam) where T : class
         {
             if (string.IsNullOrEmpty(entityParam)) throw new ArgumentNullException(nameof(entityParam), "O parâmetro da entidade não pode ser nulo ou vazio.");
@@ -94,6 +95,10 @@ namespace WebApp.Persistence.MySql
             }
         }
 
+        public async Task<Dictionary<string,T>> GetAllAsync<T>(string tableName, string columnName, string entityParam)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<T> GetByEmailAsync<T>(string email) where T : class
         {
