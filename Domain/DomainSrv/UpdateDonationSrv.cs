@@ -15,18 +15,19 @@ namespace WebApp.Domain.DomainSrv
             _data = new MySqlPersistence();
         }
 
-        public async Task Srv(string donationCod, string? pcCod, string? cersamCod, string? description)
+        public async Task Srv(string donationCod, string? pcCod, string? DonationLotCod, string? description, string tableName)
         {
             try
             {
-                _donation = await _data.GetByCodAsync<Donation>(donationCod, "donation");
-                if (_donation == null) { throw new ArgumentNullException(nameof(donationCod)); }
+                _donation = await _data.GetByCodAsync<Donation>(donationCod, tableName);
+                if (_donation == null) { throw new ArgumentNullException(nameof(_donation)); }
 
-                _donation.UpdateEntity(pcCod, cersamCod, description);
+                _donation.UpdateEntity(pcCod, DonationLotCod, description);
 
-                await _data.PostAsync<Donation>(_donation, "donation");
+                await _data.PostAsync<Donation>(_donation, tableName);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+
     }
 }

@@ -49,14 +49,23 @@
 </head>
 <body>
 
+    @if (Model.HasMessage==true)
+    {
+        <div class="alert alert-warning mt-3">
+            <p>@Model.Message </p>
+        </div>
+        Model.HasMessage = false;
+    }
+
     <div class="container">
         <div class="card shadow-sm mb-4">
             <div class="card-body text-center">
                 <form method="post">
                     <div class="form-group text-center">
                         <label for="codeInput">Registrar doação:</label>
-                        <input type="text" class="form-control text-center" id="codeInput" name="cod" placeholder="Insira o código do doador" required />
+                        <input type="text" class="form-control text-center" id="codeInput" name="Cod" placeholder="Insira o código do doador" required />
                         <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Email"/>
+                        <input type="text" class="d-none" id="CodPc" name="Cod_Pc" value="@Model.Cod_Pc" />
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Submeter</button>
                 </form>
@@ -68,9 +77,19 @@
         <div class="card shadow-sm mb-4">
             <div class="card-body text-center">
                 <form method="post">
+                    <label for="codeInput">Lotes disponíveis:</label><p></p>
+
                     <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Email" />
-                    <label for="codeInput">Fechar doações:</label><p></p>
-                    <button type="submit" asp-page-handler="CreateLot" class="btn btn-primary mt-3">Criar lote</button>
+                    <input type="text" class="d-none" id="CodPc" name="Cod_Pc" value="@Model.Cod_Pc" />
+                    @if (!string.IsNullOrEmpty(Model.Cod_Lot))
+                    {
+                        <input type="text" class="d-none" id="CodLot" name="Cod_Lot" value="@Model.Cod_Lot" />
+                        <p class="form-control-plaintext" id="CodLote">@Model.Cod_Lot</p>
+                    }
+                    else
+                    {
+                        <button type="submit" asp-page-handler="CreateLot" class="btn btn-primary mt-3">Criar lote</button>
+                    }
                 </form>
             </div>
         </div>
@@ -82,10 +101,12 @@
                 <form method="post">
                     <div class="form-group text-center">
                         <label for="codeInput">Adicionar doação ao lote:</label>
-                        <input type="text" class="form-control text-center" id="codLotInput" name="cod_lot" placeholder="Insira o código do lote" required />
-                        <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Cod_lot" />
+                        <input type="text" class="form-control text-center" id="codDonationInput" name="Cod" placeholder="Insira o código da doação: " required />
+                        <input type="text" class="d-none" id="CodPc" name="Cod_Pc" value="@Model.Cod_Pc" />
+                        <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Email" />
+                        <input type="text" class="d-none" id="CodLot" name="Cod_Lot" value="@Model.Cod_Lot" />
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3">Submeter</button>                    
+                    <button type="submit" asp-page-handler="UpdateDonation" class="btn btn-primary mt-3">Submeter</button>                    
 
                 </form>
             </div>
@@ -107,31 +128,14 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.Donations != null && Model.Donations.Count >= 1)
-            {
-                foreach(Donation donation in Model.Donations)
-                {
-                    <tr>
-                        <td>@donation.Cod</td>
-                        <td>@donation.Cod_User</td>
-                        <td>@(donation.Cod_Pc ?? "NULL")</td>
-                        <td>@(donation.Cod_lot ?? "NULL")</td>
-                        <td>@donation.Date</td>
-                        <td>@donation.Description</td>
-                        <td>@(donation.Finished == false ? "Não" : "Sim")</td>
-                    </tr>
-                } 
-            }
+           
         </tbody>
     </table>
-
-
-
     <!-- Card para exibir status -->
     @if (!ModelState.IsValid)
     {
         <div class="alert alert-danger mt-3">
-            <p>Erro: Código não encontrado inválidos.</p>
+            <p>Erro: Falha ao buscar lotes anteriores.</p>
         </div>
     }
 

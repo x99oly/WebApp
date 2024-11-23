@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using MySql.Data.MySqlClient;
 using Mysqlx.Prepare;
+using System.Data;
 using System.Data.Common;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -99,6 +100,38 @@ namespace WebApp.Persistence.MySql
         {
             throw new NotImplementedException();
         }
+
+        public async Task<Cersam> GetCersamAsync()
+        {
+            string connectionString = "sua-string-de-conexao"; // Substitua pela sua string de conexão
+            string tableName = "cersam"; // Nome da tabela
+            string commandText = $"SELECT * FROM {tableName} LIMIT 1"; // Comando SQL com LIMIT 1 para buscar apenas um registro
+
+            using (var connection = await GetConnectionAsync())
+            {
+                using (var command = new MySqlCommand(commandText, connection))
+                {
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            // Preenchendo as propriedades de Cersam com os valores do banco de dados
+                            return new Cersam
+                            {
+                                cod = reader.GetString("cod"),
+                                name = reader.GetString("name"),
+                                password = reader.GetString("password"),
+                                token = reader.GetInt32("token")
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null; // Retorna null se nenhum dado for encontrado
+        }
+
+
 
         public async Task<T> GetByEmailAsync<T>(string email) where T : class
         {

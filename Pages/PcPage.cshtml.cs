@@ -8,6 +8,7 @@ using WebApp.Domain.Entities;
 using System.Runtime.CompilerServices;
 using WebApp.Persistence.MySql;
 using Microsoft.Extensions.WebEncoders.Testing;
+using Org.BouncyCastle.Asn1;
 
 namespace WebApp.Pages
 {
@@ -25,21 +26,19 @@ namespace WebApp.Pages
         public string Cod { get; set; }  // Corrigido para maiúscula
 
         [BindProperty]
-        public string Cod_lot { get ; set; }
+        public string Cod_Pc { get; set; }
 
         [BindProperty]
-        public DonationLot lote { get; set; }
+        public string Cod_Lot { get ; set; }
 
         [BindProperty]
-        public Dictionary<string, DonationLot> lotes { get; set; }
+        public DonationLot Lote { get; set; }
 
         [BindProperty]
-        public string? Status { get; set; } // Já existente
-
+        public bool HasMessage { get; set; }
         [BindProperty]
-        public string? StatusMessage { get; set; } // Já existente
+        public string Message { get; set; }
 
-        public LinkedList<Donation>? Donations { get; set; }
 
         public async Task OnGet()
         {
@@ -53,16 +52,33 @@ namespace WebApp.Pages
                     Email = email.Trim('"').Replace("\\", "");
                    
                 }
-                if (TempData["Cod_lot"] is string cod_lot)
+                if (TempData["CodLot"] is string cod_lot)
                 {
-                    if (!string.IsNullOrEmpty(cod_lot)) Cod_lot = cod_lot;
+                    if (!string.IsNullOrEmpty(cod_lot)) 
+                        Cod_Lot = cod_lot.Trim('"').Replace("\\", "");
                 }
-                if (TempData["Lotes"] is string serializedLotes)
+                if (TempData["CodPc"] is string cod_pc)
                 {
-                    if (!string.IsNullOrEmpty(serializedLotes))
+                    if (!string.IsNullOrEmpty(cod_pc)) 
+                        Cod_Pc = cod_pc.Trim('"').Replace("\\", "");
+                }
+                if (TempData["Message"] is string message)
+                {
+                    if (string.IsNullOrEmpty(message))
                     {
-                        lotes = JsonSerializer.Deserialize<Dictionary<string, DonationLot>>(serializedLotes) ?? new Dictionary<string, DonationLot>();
+                        Message = message.Trim('"').Replace("\\", "");
+                        HasMessage = true;
                     }
+                    else
+                    {
+                        HasMessage = false;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(Cod_Lot) || !string.IsNullOrEmpty(Email))
+                {
+                    var pc = new Pc();
+                    Cod_Pc = await pc.GetCod(Email);
                 }
 
             }
@@ -71,6 +87,7 @@ namespace WebApp.Pages
                 Console.WriteLine(ex.ToString());
                 await RedirectToLogin();
             }
+
         }
 
         public async Task<IActionResult> OnPost()
@@ -82,49 +99,68 @@ namespace WebApp.Pages
 
                 if (string.IsNullOrEmpty(pcCod))
                 {
-                    return Page();
+                    return await RedirectToThisPage();
                 }
 
-                await _donationSrv.Srv(Cod, pcCod, null, null);
+                await _donationSrv.Srv(Cod, pcCod, null, null, "donation");
 
                 return await RedirectToThisPage();
             }
             catch (Exception ex)
             {
+                Message = ex.Message;
                 return await RedirectToThisPage();
             }
         }
 
         public async Task OnPostCreateLot()
         {
-            if (lotes == null) lotes = new Dictionary<string, DonationLot>();
+            if (!string.IsNullOrEmpty(Cod_Lot))
+            {
+                Message = $"Só é possível manter um lote por vez.";
+                await RedirectToThisPage();
+            }
 
-            lote = new DonationLot();
+            Lote = new DonationLot();
 
-            var pc = new Pc();
-            string pcCod = await pc.GetCod(Email);
-
-            lote.Update(null, pcCod);
+            Lote.Update(null, Cod_Pc);
 
             try
             {
-                await _data.PostAsync<DonationLot>(lote, "donation_lot");
+                await _data.PostAsync<DonationLot>(Lote, "donation_lot");
 
-                Cod_lot = lote.cod;
+                Cod_Lot = Lote.cod;                
 
                 await RedirectToThisPage();
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                Message = ex.Message;
+                await RedirectToThisPage();
+//                throw new Exception(ex.Message);
             }
+        }
+
+        public async Task OnPostUpdateDonation()
+        {
+            if (string.IsNullOrEmpty(Cod_Lot))
+            {
+                Message = $"Não há lotes disponíveis";
+            }
+            // donationCod / PcCod / DonationLoteCod / Description
+            else if (!string.IsNullOrEmpty(Cod) && !string.IsNullOrEmpty(Cod_Pc))
+            {
+                await _donationSrv.Srv(Cod, Cod_Pc, Cod_Lot, null, "donation");
+            }
+            await RedirectToThisPage();
         }
 
         private async Task<IActionResult> RedirectToThisPage()
         {
+            TempData["CodPc"] = JsonSerializer.Serialize(Cod_Pc);
             TempData["Email"] = JsonSerializer.Serialize(Email);
-            TempData["Cod_lot"] = JsonSerializer.Serialize(Cod_lot);
-            TempData["Lotes"] = JsonSerializer.Serialize(lotes);
+            TempData["CodLot"] = JsonSerializer.Serialize(Cod_Lot);
+            TempData["Message"] = JsonSerializer.Serialize(Message);
             return RedirectToPage();
         }
         private async Task<IActionResult> RedirectToLogin()
