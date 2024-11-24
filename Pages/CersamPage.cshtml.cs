@@ -15,17 +15,10 @@ namespace WebApp.Pages
         private readonly DonationsSrv _donationsSrv = new DonationsSrv();
 
         [BindProperty]
-        public string? Email { get; set; }
-
-        [BindProperty]
-        public string? DonationCod { get; set; }
+        public string? Cod_Lot { get; set; }
         public async Task OnGet()
         {
-            if (TempData["Email"] is string email)
-            {
-                if (string.IsNullOrEmpty(email)) await RedirectToLogin();
-                Email = email.Trim('"').Replace("\\", "");
-            }
+
         }
 
         public async void OnPost()
@@ -33,14 +26,27 @@ namespace WebApp.Pages
             Cersam c = await _data.GetCersamAsync();
             if (c == null) await RedirectToLogin();
 
-            await _donationSrv.Srv(DonationCod, null, c.cod, null, "donation");
+            if (string.IsNullOrEmpty(Cod_Lot)) await RedirectToThisPage();
+            // table / column / param
+            try
+            {
+                DonationLot lote = await _data.GetByGenerecParams<DonationLot>("donation_lot", "cod", Cod_Lot);
+                if (lote == null) await RedirectToThisPage();
 
-            await RedirectToThisPage();
+                lote.Update(c.cod, lote.cod_pc);
+                await _data.PostAsync<DonationLot>(lote, "donation_lot");
+
+                await RedirectToThisPage();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private async Task<IActionResult> RedirectToThisPage()
         {
-            TempData["Email"] = JsonSerializer.Serialize(Email);
+            //TempData["Email"] = JsonSerializer.Serialize(Email);
             return RedirectToPage();
         }
         private async Task<IActionResult> RedirectToLogin()

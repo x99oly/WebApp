@@ -2,6 +2,7 @@
 using System.Net;
 using System.Text.Json;
 using WebApp.Domain.DomainSrv;
+using WebApp.Domain.Entities;
 
 namespace ReuseServer.Domain.DomainSrv
 {
@@ -40,13 +41,14 @@ namespace ReuseServer.Domain.DomainSrv
             };
         }
 
-        public MailMessage SuccessDonationMessage()
+        public MailMessage SuccessDonationMessage(Donation donation, Donor donor)
         {
             return new MailMessage()
             {
                 From = new MailAddress(_domainEmail),
-                Subject = "Reuse - Doação cadastrado com sucesso!",
-                Body = $"Sua doação foi registrada com sucesso. Entregue-a em um ponto de coleta para confirmação.",
+                Subject = $"{donor.Name} sua doação for cadastrada com sucesso!",
+                Body = $"Sua doação foi registrada com sucesso. Entregue-a em um ponto de coleta para confirmação.\n" +
+                $"CÓDIGO DA DOAÇÃO: {donation.Cod}.",
                 IsBodyHtml = false,
             };
         }

@@ -24,7 +24,7 @@ namespace WebApp.Domain.Services
         {
             try
             {
-                Donor? dnr = await _data.GetByGenerecParams<Donor>("donor", "cod", donor.Cod);
+                Donor? dnr = await _data.GetByGenerecParams<Donor>("donor", "email", donor.Email);
                 if( dnr == null) await _data.PostAsync<Donor>(donor, "donor");
 
                 _donation = new Donation();
@@ -32,7 +32,7 @@ namespace WebApp.Domain.Services
 
                 await _data.PostAsync(_donation, "donation");
 
-                _email.SendEmail(input.email, _message.SuccessDonationMessage);
+                _email.SendEmail(input.email, ()=> _message.SuccessDonationMessage(_donation, donor));
             }
             catch (Exception ex) { throw new Exception("Não foi possível salvar doação: " + ex.Message); }
         }

@@ -66,6 +66,7 @@
                         <input type="text" class="form-control text-center" id="codeInput" name="Cod" placeholder="Insira o código do doador" required />
                         <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Email"/>
                         <input type="text" class="d-none" id="CodPc" name="Cod_Pc" value="@Model.Cod_Pc" />
+                        <p class="form-control-plaintext d-none" id="CodLote">@Model.Cod_Lot</p>
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Submeter</button>
                 </form>
@@ -81,15 +82,13 @@
 
                     <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Email" />
                     <input type="text" class="d-none" id="CodPc" name="Cod_Pc" value="@Model.Cod_Pc" />
-                    @if (!string.IsNullOrEmpty(Model.Cod_Lot))
+                    @if (!string.IsNullOrEmpty(Model.Cod_Lot) && !string.IsNullOrWhiteSpace(Model.Cod_Lot))
                     {
                         <input type="text" class="d-none" id="CodLot" name="Cod_Lot" value="@Model.Cod_Lot" />
                         <p class="form-control-plaintext" id="CodLote">@Model.Cod_Lot</p>
                     }
-                    else
-                    {
                         <button type="submit" asp-page-handler="CreateLot" class="btn btn-primary mt-3">Criar lote</button>
-                    }
+                    
                 </form>
             </div>
         </div>

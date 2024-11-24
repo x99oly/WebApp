@@ -75,12 +75,17 @@ namespace WebApp.Pages
                     }
                 }
 
-                if (string.IsNullOrEmpty(Cod_Lot) || !string.IsNullOrEmpty(Email))
+                if (string.IsNullOrEmpty(Cod_Pc) || !string.IsNullOrEmpty(Email))
                 {
                     var pc = new Pc();
                     Cod_Pc = await pc.GetCod(Email);
                 }
 
+                if (string.IsNullOrEmpty(Cod_Lot))
+                {
+                    DonationLot lote = await _data.GetByGenerecParams<DonationLot>("donation_lot", "cod_pc", Cod_Pc);
+                    if (lote != null) Cod_Lot = lote.cod;
+                }
             }
             catch (Exception ex)
             {

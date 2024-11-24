@@ -60,7 +60,7 @@ namespace WebApp.Pages
                 ModelState.AddModelError(string.Empty, "Ocorreu um erro ao processar sua doação. Por favor, tente novamente.");
             }
 
-            return Page();
+            return RedirectToPage();
         }
     }
 }
