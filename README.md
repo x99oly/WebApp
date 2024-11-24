@@ -64,26 +64,27 @@ WebApp
    após:
    ```
    cd WebApp.git
-    ```
+   ```
 5. Ainda no terminal, dentro do diretório, digite o seguinte comando para restaurar os pacotes instalados no projeto.
    ```
    dotnet restore
    ```
 6. Crie um arquivo, na raíz do diretório, chamado 'Credential.json'
 7. Configure o arquivo da seguinte forma:
- ```
- {
-  "EmailSettings": {
-    "DomainEmail": "SEU-EMAIL@SEU-PROVEDOR.com",
-    "DomainPassword": "xxxx xxxx xxxx xxxx"
-  },
-  "MySql": {
+    ```
+    {
+       "EmailSettings": {
+       "DomainEmail": "SEU-EMAIL@SEU-PROVEDOR.com",
+       "DomainPassword": "xxxx xxxx xxxx xxxx"
+     },
+     "MySql": {
     "ConnectionString": "Server=SEU-SERVER;Database=reuse;User=SEU-USUÁRIO;Password=SUA-SENHA"
-  }
-}
-```
+     }
+   }
+   ```
 ** Repare que para este projeto funcionar será necessário configurar seu provedor de email para envio por SMTP
-   -> Veja em : [mailmeteor]("https://mailmeteor.com/blog/gmail-smtp-settings") ou assista [DesignmpNet]("https://www.youtube.com/watch?v=LWYs7QjHC_E")
+Veja em: [mailmeteor](https://mailmeteor.com/blog/gmail-smtp-settings) ou assista [DesignmpNet](https://www.youtube.com/watch?v=LWYs7QjHC_E)
+   
 7. Após estes vá no arquivo createcode.sql e rode ele dentro do SGBD (MySql).
 8. Dentro do diretório, no terminal, digite
    ```
