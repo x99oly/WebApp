@@ -63,8 +63,8 @@ WebApp
    cd WebApp.git
    ```
 4. Ainda no terminal, dentro do diretório, digite o seguinte comando para restaurar os pacotes instalados no projeto.
-   dotnet restore
-5. Crie um arquivo, na raíz do documento, chamado 'Credential.json'
+   `dotnet restore`
+5. Crie um arquivo, na raíz do diretório, chamado 'Credential.json'
 6. Configure o arquivo da seguinte forma:
  ```
  {
@@ -81,7 +81,7 @@ WebApp
    -> Veja em : [mailmeteor]("https://mailmeteor.com/blog/gmail-smtp-settings") ou assista [DesignmpNet]("https://www.youtube.com/watch?v=LWYs7QjHC_E")
 7. Após estes vá no arquivo createcode.sql e rode ele dentro do SGBD (MySql).
 8. Dentro do diretório, no terminal, digite
-   dotnet WebApp.cs
+   `dotnet WebApp.cs`
 
 ## 🌛 Considerações finais:
 Devido aos prazos apertados, este código foi entregue na versão piloto (MVP). Como resultado, ele ainda precisa de refatoração e melhorias para se tornar mais conciso e robusto.
