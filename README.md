@@ -58,12 +58,15 @@ WebApp
 1. Selecione uma pasta do seu dispositivo.
 2. Dentro da pasta clique com o botão direito do mouse e escolha 'abrir no terminal'.
 3. Digite o comando:
+   ```
    git clone https://github.com/x99oly/WebApp.git
    cd WebApp.git
+   ```
 4. Ainda no terminal, dentro do diretório, digite o seguinte comando para restaurar os pacotes instalados no projeto.
    dotnet restore
 5. Crie um arquivo, na raíz do documento, chamado 'Credential.json'
 6. Configure o arquivo da seguinte forma:
+ ```
  {
   "EmailSettings": {
     "DomainEmail": "SEU-EMAIL@SEU-PROVEDOR.com",
@@ -73,10 +76,11 @@ WebApp
     "ConnectionString": "Server=SEU-SERVER;Database=reuse;User=SEU-USUÁRIO;Password=SUA-SENHA"
   }
 }
+```
 ** Repare que para este projeto funcionar será necessário configurar seu provedor de email para envio por SMTP
    -> Veja em : [mailmeteor]("https://mailmeteor.com/blog/gmail-smtp-settings") ou assista [DesignmpNet]("https://www.youtube.com/watch?v=LWYs7QjHC_E")
-8. Após estes vá no arquivo createcode.sql e rode ele dentro do SGBD (MySql).
-9. Dentro do diretório, no terminal, digite
+7. Após estes vá no arquivo createcode.sql e rode ele dentro do SGBD (MySql).
+8. Dentro do diretório, no terminal, digite
    dotnet WebApp.cs
 
 ## 🌛 Considerações finais:
