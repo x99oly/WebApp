@@ -1,4 +1,4 @@
-# Donation Management System
+# Reuse
 
 Este projeto é uma aplicação para gerenciamento de doações que conecta **donors** (doadores), **PCs** (Pontos de Coleta), e **CERSAM** (entidade que recebe os lotes de doações). O sistema foi desenvolvido em **.NET Framework** com **Razor Pages**, seguindo os princípios de **Domain-Driven Design (DDD)** e utilizando **MySQL** como banco de dados relacional.
 
