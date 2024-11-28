@@ -14,7 +14,7 @@ namespace WebApp.Persistence.MySql
 {
     public class MySqlPersistence
     {
-        private readonly string _connectionString = "Server=localhost;Database=reuse;User=root;Password=senha;";
+        private readonly string _connectionString = "Server=127.0.0.1;Port=3306;Database=reuse;User=root;Password=159357";
         private GetCredentials credentials;
         public MySqlPersistence()
         {
@@ -56,25 +56,26 @@ namespace WebApp.Persistence.MySql
             }
         }
 
-        public async Task<T> GetByGenerecParams<T>(string tableName, string columnName, string entityParam) where T : class
-        {
-            if (string.IsNullOrEmpty(entityParam)) throw new ArgumentNullException(nameof(entityParam), "O parâmetro da entidade não pode ser nulo ou vazio.");
-            if (string.IsNullOrEmpty(columnName)) throw new ArgumentNullException(nameof(columnName), "O parâmetro da tabela não pode ser nulo ou vazio.");
-            if (string.IsNullOrEmpty(tableName)) throw new ArgumentNullException(nameof(tableName), "O nome da tabela não pode ser nulo ou vazio.");
-
-            if (!IsValidTableName(tableName)) throw new ArgumentException("Nome de tabela inválido.");
-
-
-            using (var connection = await GetConnectionAsync())
+                public async Task<T> GetByGenerecParams<T>(string tableName, string columnName, string entityParam) where T : class
             {
-                var commandText = $"SELECT * FROM {tableName} WHERE {columnName}='{entityParam}'";
-                var parameters = new Dictionary<string, object>
+                if (string.IsNullOrEmpty(entityParam)) throw new ArgumentNullException(nameof(entityParam), "O parâmetro da entidade não pode ser nulo ou vazio.");
+                if (string.IsNullOrEmpty(columnName)) throw new ArgumentNullException(nameof(columnName), "O parâmetro da tabela não pode ser nulo ou vazio.");
+                if (string.IsNullOrEmpty(tableName)) throw new ArgumentNullException(nameof(tableName), "O nome da tabela não pode ser nulo ou vazio.");
+
+                if (!IsValidTableName(tableName)) throw new ArgumentException("Nome de tabela inválido.");
+
+                using (var connection = await GetConnectionAsync())
                 {
-                    {"@entityParam", entityParam }
-                };
-                return await ExecuteQueryAsync<T>(connection, commandText, parameters);
+                    var commandText = $"SELECT * FROM {tableName} WHERE {columnName} = @entityParam";
+                    var parameters = new Dictionary<string, object>
+                    {
+                        { "@entityParam", entityParam }
+                    };
+                    
+                    return await ExecuteQueryAsync<T>(connection, commandText, parameters);
+                }
             }
-        }
+
 
         [Obsolete]
         public async Task<List<Donation>> GetListByGenericParams<T>(string tableName, string columnName, string entityParam) where T : class
@@ -103,7 +104,7 @@ namespace WebApp.Persistence.MySql
 
         public async Task<Cersam> GetCersamAsync()
         {
-            string connectionString = "sua-string-de-conexao"; // Substitua pela sua string de conexão
+            string connectionString = "Server=127.0.0.1;Port=3306;Database=reuse;User=root;Password=159357"; // Substitua pela sua string de conexão
             string tableName = "cersam"; // Nome da tabela
             string commandText = $"SELECT * FROM {tableName} LIMIT 1"; // Comando SQL com LIMIT 1 para buscar apenas um registro
 
