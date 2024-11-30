@@ -1,0 +1,261 @@
+/* Fontes e variáveis */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap');
+
+:root {
+    --principal: #ED4028;
+    --vermelhop: #ED4028;
+    --branco: #FCFCFC;
+    --cinza: #6B6A6A;
+    --cinzac: #D9D9D9;
+    --footer: #1D1D1D;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Open Sans", sans-serif;
+    line-height: 1.6;
+    color: var(--cinza);
+    background-color: #f8f9fa;
+}
+
+/* Carrossel */
+.carousel-item {
+    height: 60vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--branco);
+}
+
+.carousel-caption h1 {
+    font-size: 2.5rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.carousel-caption button {
+    background-color: var(--principal);
+    color: var(--branco);
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.carousel-indicators {
+    display: none;
+}
+
+/* Cards */
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: -100px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    text-align: center;
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.card-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--principal);
+}
+
+.card-content p {
+    color: var(--cinza);
+    margin-bottom: 10px;
+}
+
+.card-content button {
+    background-color: var(--vermelhop);
+    color: var(--branco);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+/* Seções */
+.section {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.section img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--principal);
+}
+
+.section p {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.2rem;
+    line-height: 1.5;
+}
+
+/* Rodapé */
+footer {
+    background-color: var(--footer);
+    color: var(--branco);
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* Estilo da seção do formulário */
+.form-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.form-title {
+    font-size: 1.8rem;
+    color: var(--principal);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.donation-form .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.donation-form .form-group label {
+    flex: 1; /* Rótulo ocupa espaço proporcional */
+    font-weight: bold;
+    color: var(--cinza);
+    margin-right: 10px;
+    text-align: right; /* Alinha o texto do rótulo à direita */
+}
+
+.donation-form .form-group input,
+.donation-form .form-group textarea {
+    flex: 3; /* Campo de entrada ocupa mais espaço */
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.donation-form .form-group input:focus,
+.donation-form .form-group textarea:focus {
+    border-color: var(--principal);
+    box-shadow: 0 0 5px rgba(237, 64, 40, 0.5);
+}
+
+.donation-form button {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    background-color: var(--principal);
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.form-group {
+    display: block;
+    margin-bottom: 1rem; /* Exemplo de margem personalizada */
+}
+.btn btn-primary my-1{
+    color:#ED4028
+}
+.donation-form button:hover {
+    background-color: darken(var(--principal), 10%);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .carousel-caption h1 {
+        font-size: 1.8rem;
+    }
+
+    .carousel-caption button {
+        font-size: 0.9rem;
+        padding: 8px 20px;
+    }
+
+    .card img {
+        height: 150px;
+    }
+
+    .card-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .card-content p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-item {
+        height: 40vh;
+    }
+
+    .carousel-caption h1 {
+        font-size: 1.5rem;
+    }
+
+    .carousel-caption button {
+        font-size: 0.7rem;
+        padding: 7px 15px;
+    }
+}
