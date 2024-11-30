@@ -14,7 +14,7 @@ namespace WebApp.Persistence.MySql
 {
     public class MySqlPersistence
     {
-        private readonly string _connectionString = "Server=localhost;Database=reuse;User=root;Password=senha;";
+        private readonly string _connectionString;
         private GetCredentials credentials;
         public MySqlPersistence()
         {
@@ -41,15 +41,13 @@ namespace WebApp.Persistence.MySql
                     GenerateColumnsAndParameters(entity, out var columns, out var parameters, command);
 
                     var updateClauses = columns
-                        .Select(c => $"{c} = VALUES({c})") // 'VALUES(c)' irá pegar o novo valor para a coluna
+                        .Select(c => $"{c} = VALUES({c})") 
                         .ToList();
 
                     command.CommandText = $@"
                         INSERT INTO {table.ToLower()} ({string.Join(",", columns)})
                         VALUES ({string.Join(",", parameters)})
                         ON DUPLICATE KEY UPDATE {string.Join(",", updateClauses)};";
-
-                    //command.CommandText = $"INSERT INTO {table.ToLower()} ({string.Join(",", columns)}) VALUES ({string.Join(",", parameters)});";
 
                     await ExecuteCommandAsync(command);
                 }
@@ -101,6 +99,7 @@ namespace WebApp.Persistence.MySql
             throw new NotImplementedException();
         }
 
+        [Obsolete]
         public async Task<Cersam> GetCersamAsync()
         {
             string connectionString = "sua-string-de-conexao"; // Substitua pela sua string de conexão
