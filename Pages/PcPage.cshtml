@@ -79,15 +79,16 @@
             <div class="card-body text-center">
                 <form method="post">
                     <label for="codeInput">Lotes disponíveis:</label><p></p>
-
+                    <h4>@Model.Cod_Lot</h4>
                     <input type="text" class="d-none" id="emailInput" name="Email" value="@Model.Email" />
                     <input type="text" class="d-none" id="CodPc" name="Cod_Pc" value="@Model.Cod_Pc" />
-                    @if (!string.IsNullOrEmpty(Model.Cod_Lot) && !string.IsNullOrWhiteSpace(Model.Cod_Lot))
+
+                    @if (string.IsNullOrEmpty(Model.Cod_Lot) && string.IsNullOrWhiteSpace(Model.Cod_Lot))
                     {
                         <input type="text" class="d-none" id="CodLot" name="Cod_Lot" value="@Model.Cod_Lot" />
                         <p class="form-control-plaintext" id="CodLote">@Model.Cod_Lot</p>
-                    }
                         <button type="submit" asp-page-handler="CreateLot" class="btn btn-primary mt-3">Criar lote</button>
+                    }
                     
                 </form>
             </div>

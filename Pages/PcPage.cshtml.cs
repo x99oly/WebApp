@@ -29,7 +29,7 @@ namespace WebApp.Pages
         public string Cod_Pc { get; set; }
 
         [BindProperty]
-        public string Cod_Lot { get ; set; }
+        public string Cod_Lot { get; set; }
 
         [BindProperty]
         public DonationLot Lote { get; set; }
@@ -50,16 +50,16 @@ namespace WebApp.Pages
                 {
                     if (string.IsNullOrEmpty(email)) await RedirectToLogin();
                     Email = email.Trim('"').Replace("\\", "");
-                   
+
                 }
                 if (TempData["CodLot"] is string cod_lot)
                 {
-                    if (!string.IsNullOrEmpty(cod_lot)) 
+                    if (!string.IsNullOrEmpty(cod_lot))
                         Cod_Lot = cod_lot.Trim('"').Replace("\\", "");
                 }
                 if (TempData["CodPc"] is string cod_pc)
                 {
-                    if (!string.IsNullOrEmpty(cod_pc)) 
+                    if (!string.IsNullOrEmpty(cod_pc))
                         Cod_Pc = cod_pc.Trim('"').Replace("\\", "");
                 }
                 if (TempData["Message"] is string message)
@@ -81,11 +81,9 @@ namespace WebApp.Pages
                     Cod_Pc = await pc.GetCod(Email);
                 }
 
-                if (string.IsNullOrEmpty(Cod_Lot))
-                {
-                    DonationLot lote = await _data.GetByGenerecParams<DonationLot>("donation_lot", "cod_pc", Cod_Pc);
-                    if (lote != null) Cod_Lot = lote.cod;
-                }
+                DonationLot lote = await _data.GetByGenerecParams<DonationLot>("donation_lot", "cod_pc", Cod_Pc);
+                if (lote != null) Cod_Lot = lote.cod;
+
             }
             catch (Exception ex)
             {
@@ -126,6 +124,16 @@ namespace WebApp.Pages
                 await RedirectToThisPage();
             }
 
+            if (!string.IsNullOrEmpty(Cod_Lot))
+            {
+                Lote = await _data.GetByGenerecParams<DonationLot>("donation_lot", "cod", Cod_Lot);
+            }
+            if (Lote != null)
+            {
+                Cod_Lot = Lote.cod;
+                await RedirectToThisPage();
+            }
+
             Lote = new DonationLot();
 
             Lote.Update(null, Cod_Pc);
@@ -134,7 +142,7 @@ namespace WebApp.Pages
             {
                 await _data.PostAsync<DonationLot>(Lote, "donation_lot");
 
-                Cod_Lot = Lote.cod;                
+                Cod_Lot = Lote.cod;
 
                 await RedirectToThisPage();
             }
@@ -142,7 +150,6 @@ namespace WebApp.Pages
             {
                 Message = ex.Message;
                 await RedirectToThisPage();
-//                throw new Exception(ex.Message);
             }
         }
 
