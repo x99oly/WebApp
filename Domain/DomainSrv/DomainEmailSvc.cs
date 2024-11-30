@@ -48,7 +48,8 @@ namespace ReuseServer.Domain.DomainSrv
                 From = new MailAddress(_domainEmail),
                 Subject = $"{donor.Name} sua doação for cadastrada com sucesso!",
                 Body = $"Sua doação foi registrada com sucesso. Entregue-a em um ponto de coleta para confirmação.\n" +
-                $"CÓDIGO DA DOAÇÃO: {donation.Cod}.",
+                $"CÓDIGO DA DOAÇÃO: {donation.Cod}.\n" +
+                $"DESCRIÇÃO DA DOAÇÃO: {donation.Description}",
                 IsBodyHtml = false,
             };
         }

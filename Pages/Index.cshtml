@@ -1,5 +1,4 @@
-﻿
-@page
+﻿@page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -13,56 +12,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/principal.css">
-    <link rel="stylesheet" href="~/css/commum.css">
     <title>@ViewData["Title"]</title>
 </head>
 
 <body>
 
- 
-    <!-- Carrossel -->
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-            <div class="carousel-item active" style="background-image: url('@Url.Content("~/images/moca.png")');"
-">
-                <div class="carousel-caption">
-                    <h1>Doe amor, aqueça corações. Sua roupa pode fazer a diferença!</h1>
-                    <button>Faça sua parte!</button>
-                </div>
-            </div>
-            <div class="carousel-item" style="background-image: url('@Url.Content("~/images/portrait-of-store-owner-in-his-store.jpg")');"
-">
-                <div class="carousel-caption">
-                    <h1>Cada peça de roupa doada é uma declaração de amor ao próximo.</h1>
-                    <button>Faça sua parte!</button>
-                </div>
-            </div>
-            <div class="carousel-item" style="background-image: url('@Url.Content("~/images/pexels-kaip-996329.jpg")');"
-">
-                <div class="carousel-caption">
-                    <h1>Corações generosos não acumulam, compartilham. Doe roupas!</h1>
-                    <button>Faça sua parte!</button>
-                </div>
-            </div>
-        </div>
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Anterior</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Próximo</span>
-        </a>
-    </div>
 
-    <!-- Seção de Doações -->
+    <!-- Carrossel -->
     <section class="text-center">
-     
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="background-image: url('@Url.Content("~/images/moca.png")');">
+                    <div class="carousel-caption">
+                        <h1>Doe amor, aqueça corações. Sua roupa pode fazer a diferença!</h1>
+                        <button>Faça sua parte!</button>
+                    </div>
+                </div>
+                <div class="carousel-item" style="background-image: url('@Url.Content("~/images/portrait-of-store-owner-in-his-store.jpg")');">
+                    <div class="carousel-caption">
+                        <h1>Cada peça de roupa doada é uma declaração de amor ao próximo.</h1>
+                        <button>Faça sua parte!</button>
+                    </div>
+                </div>
+                <div class="carousel-item" style="background-image: url('@Url.Content("~/images/pexels-kaip-996329.jpg")');">
+                    <div class="carousel-caption">
+                        <h1>Corações generosos não acumulam, compartilham. Doe roupas!</h1>
+                        <button>Faça sua parte!</button>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Anterior</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Próximo</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="form-section text-center">
+
         @if (ViewData["SuccessMessage"] != null)
         {
             <div class="alert alert-success">
@@ -70,33 +66,52 @@
             </div>
         }
 
-      <br>
-<br>
-<br>
-<br>
-<br><br>
-<br>
+        <div class="container">
+            <h2 class="text-center mb-4">Faça sua Doação</h2>
+            <form method="post">
+                <div class="form-group mb-3">
+                    <label for="nameInput">Nome</label>
+                    <input type="text" class="form-control" id="nameInput" name="Name" placeholder="Seu nome" value="@Model.Name">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="emailInput">E-mail</label>
+                    <input type="email" class="form-control" id="emailInput" name="Email" placeholder="Seu e-mail" value="@Model.Email">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="descriptionInput">Descrição</label>
+                    <textarea class="form-control" id="descriptionInput" name="Description" rows="5"
+                              placeholder="Por favor, descreva aqui os itens e quantidades que pretende doar.">@Model.Description</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary my-1">Enviar</button>
+            </form>
+        </div>
+    </section>
+
     <!-- Cards de Doações -->
     <section class="cards">
+        <br /><br />
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <div class="card">
-           <img src="/images/cobertor.png" alt="Cobertor do Bem">
+                        <img src="/images/cobertor.png" alt="Cobertor do Bem">
                         <div class="card-content">
                             <h2>Cobertor do Bem</h2>
                             <p>Aqueça um coração: doe um cobertor.</p>
-                          
+
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        <img src= "~/images/celular.png" alt="Cobertor do Bem">
+                        <img src="~/images/celular.png" alt="Cobertor do Bem">
                         <div class="card-content">
                             <h2>Pontos de coletas!</h2>
                             <p>Veja todos os Pontos de coletas disponíveis.</p>
-                       
+
                         </div>
                     </div>
                 </div>
@@ -106,7 +121,7 @@
                         <div class="card-content">
                             <h2>Roupas para Todos</h2>
                             <p>Doe roupas e ajude a quem mais precisa.</p>
-                       
+
                         </div>
                     </div>
                 </div>
@@ -114,39 +129,14 @@
         </div>
     </section>
 
-<section class="form-section">
-    <div class="container">
-        <h2 class="text-center mb-4" style="color:#">Faça sua Doação</h2>
-        <form method="post">
-            <div class="form-group mb-3">
-                <label for="nameInput">Nome</label>
-                <input type="text" class="form-control" id="nameInput" name="Name" placeholder="Seu nome" value="@Model.Name">
-            </div>
-            
-            <div class="form-group mb-3">
-                <label for="emailInput">E-mail</label>
-                <input type="email" class="form-control" id="emailInput" name="Email" placeholder="Seu e-mail" value="@Model.Email">
-            </div>
-            
-            <div class="form-group mb-3">
-                <label for="descriptionInput">Descrição</label>
-                <textarea class="form-control" id="descriptionInput" name="Description" rows="5" placeholder="Por favor, descreva aqui os itens e quantidades que pretende doar.">@Model.Description</textarea>
-            </div>
-           
-            <button  type="submit" class="btn btn-primary my-1">Enviar</button>
-        </form>
-    </div>
-</section>
-
-
-
     <!-- Como Funciona -->
     <section class="section">
         <img src="~/images/logo02.png" alt="Processo de Doação">
         <br><br>
         <div class="container">
             <h2>Como funciona</h2>
-            <p>Nosso processo é simples e direto. Você escolhe as roupas ou itens que deseja doar, nos avisa, e cuidamos do resto. Sua doação vai diretamente para quem precisa, ajudando a fazer a diferença na vida de muitas pessoas.</p>
+            <p>Nosso processo é simples e direto. Você escolhe as roupas ou itens que deseja
+                doar, nos avisa, e cuidamos do resto. Sua doação vai diretamente para quem precisa, ajudando a fazer a diferença na vida de muitas pessoas.</p>
             <br>
         </div>
     </section>
@@ -168,7 +158,6 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="~/js/firebase.js"></script>
 
 </body>
 </html>
