@@ -31,7 +31,7 @@ Este projeto é uma aplicação para gerenciamento de doações que conecta **do
 ---
 
 ## 📂 Estrutura de Pastas
-
+[LInk para versão mais visual](https://drive.google.com/file/d/1LlTMbVpEzopntEGtJBkSf1s2KD9swfLy/view?usp=sharing)
 ```plaintext
 WebApp
 ├── Properties
